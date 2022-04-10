@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html lang="zh-TW">
+
+<head>
+  {# 網頁 <head></head> 內容 #}
+  {% block head %}
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+  {% endblock %}
+  {# 每一頁的視窗名稱 #}
+  <title>{% block title %}{% endblock title %} - 圖書館系統</title>
+</head>
+
+<body class="dark">
+  {# 導覽列 #}
+  {% block navigationBar %}
+  <nav>
+    <ul>
+      {# 導覽列物件 #}
+      {% for menuItem in menu %}
+      <li>
+        <h3>
+          <a href="{{ menuItem.href }}" target="_self">{{ menuItem.name }}</a>
+        </h3>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endblock navigationBar %}
+  {# 主要內容 #}
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+  {# 網頁底部 #}
+  {% block footer %}
+  <footer>
+    <p align="center">2022</p>
+  </footer>
+  {% endblock footer %}
+</body>
+</html>

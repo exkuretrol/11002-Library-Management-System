@@ -1,0 +1,23 @@
+{
+    "name": "kuaz/mid-term",
+    "type": "project",
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4": {
+            "Library\\": "src/library"
+        }
+    },
+    "authors": [
+        {
+            "name": "exkuretrol",
+            "email": "33695301+exkuretrol@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "2.x",
+        "vlucas/phpdotenv": "^5.4",
+        "bramus/router": "^1.6"
+    }
+}
