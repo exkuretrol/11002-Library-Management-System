@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html lang="zh-TW">
+
+<head>
+    {# 網頁
+
+    <head></head> 內容 #}
+    {% block head %}
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    {% endblock %}
+    {# 每一頁的視窗名稱 #}
+    <title>{% block title %}{% endblock title %} - 圖書館系統</title>
+    {% block extraScript %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            $("#userBtn").on("click", function() {
+                $("#userMenuContainer").css("display", "block");
+            });
+
+            $("#openLoginPanelBtn").on("click", function () {
+                $("#loginPanelContainer").css("display", "flex");
+            });
+
+            // login Form
+            $("#loginBtn").on("click", function (e) {
+                let form = $("#loginForm");
+                $.ajax({
+                    type: "POST",
+                    url: "/auth/login",
+                    data: form.serialize(),
+                    success: function (data) {
+                        let result = JSON.parse(data);
+                        console.table(result);
+                        if (result["status"]) {
+                            $("#loginPanelContainer").css("display", "none");
+                        }
+                        else {
+                            let msg = result["status_text"];
+                            $("#login_msg").removeAttr("hidden").html(msg);
+                        }
+                    }
+                });
+
+                e.preventDefault();
+            });
+
+            $("#cancelBtn").on("click", function (e) {
+                $("#loginPanelContainer").css("display", "none");
+                e.preventDefault();
+            });
+        });
+    </script>
+    {% endblock extraScript %}
+</head>
+
+<body>
+
+    {# 導覽列 #}
+    {% include "navigationBar.twig" %}
+
+    {# 主要內容 #}
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    {# 網頁底部 #}
+    {% block footer %}
+    <footer>
+        <p align="center">2022</p>
+    </footer>
+    {% endblock footer %}
+</body>
+
+</html>

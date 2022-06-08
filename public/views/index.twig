@@ -1,0 +1,23 @@
+{# 延伸 base.twig #}
+{% extends "base.twig" %}
+
+{# 頁面標題 #}
+{% block title %}主頁{% endblock title %}
+
+{# html頭 #}
+{% block head %}
+  {{ parent() }}
+{% endblock head %}
+
+{# 主頁內容 #}
+{% block content %}
+<img src="https://placekitten.com/200/300" alt=""><h1>Manni圖書館</h1>
+<label for="searchBar">搜尋：</label>
+<input type="text" name="searchBar" id="searchBar">
+<button type="submit">送出</button>
+{% endblock %}
+
+{# html腳 #}
+{% block footer %}
+  {{ parent() }}
+{% endblock footer %}

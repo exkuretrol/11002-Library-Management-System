@@ -6,7 +6,7 @@
             "src/helpers.php"
         ],
         "psr-4": {
-            "Library\\": "src/library"
+            "Classes\\": "src/Classes"
         }
     },
     "authors": [

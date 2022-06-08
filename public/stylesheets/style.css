@@ -1,0 +1,149 @@
+:root {
+  --color-1: #05386B;
+  --color-3: #379683;
+  --color-5: #5cdb95;
+  --color-7: #8ee4af;
+  --color-9: #edf5e1;
+}
+
+html {
+  display: block;
+  line-height: 1.5;
+  font-family: system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+body,
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: content-box;
+  border-width: 0px;
+  border-style: solid;
+  word-wrap: break-word;
+}
+
+/* body */
+body {
+  position: relative;
+  min-height: 100%;
+  font-feature-settings: "kern";
+  /* background: var(--color-9);
+  color: var(--color-1); */
+  padding-bottom: 2rem;
+}
+
+/* navigation bar */
+nav {
+  position: fixed;
+  width: 100%;
+  background: inherit;
+  z-index: 1;
+  /* backdrop-filter: blur(10px); */
+}
+
+nav>ul {
+  display: flex;
+  padding: .5rem;
+  margin-inline-start: auto;
+  margin-inline-end: auto;
+  margin-block: 0em;
+  max-width: 768px;
+}
+
+nav>ul>li {
+  display: inline-block;
+  align-items: center;
+  padding: .5rem;
+  list-style: none;
+}
+
+ul>li>h3>a {
+  text-decoration: none;
+}
+
+nav>ul>li.userItem {
+  margin-left: auto;
+  position: relative;
+}
+
+nav>ul>li>button {
+  border: 0;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  outline: none;
+  background-color: transparent;
+  font-size: inherit;
+  margin: 0;
+}
+
+nav>ul>li>button>span.menu-arrow::after {
+  display: block;
+  content: "\25BC";
+  font-size: inherit;
+  transform: scaleY(.5) scaleX(1);
+}
+
+/* login panel */
+#loginPanelContainer {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgb(0, 0, 0, .2);
+}
+
+#loginForm {
+  background-color: grey;
+  width: 40%;
+  border: 1px solid #888;
+}
+
+/* user menu */
+#userMenuContainer {
+  position: absolute;
+  display: none;
+}
+
+#userMenuContent {
+  display: flex;
+  flex-direction: column;
+}
+
+/* layout */
+.layout-column {
+  flex-direction: column;
+}
+
+.layout-row {
+  flex-direction: row;
+}
+
+/* main content */
+#content {
+  padding-top: 3.5em;
+}

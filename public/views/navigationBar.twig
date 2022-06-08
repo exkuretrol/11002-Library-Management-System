@@ -1,0 +1,48 @@
+<nav>
+    <ul>
+        {# 導覽列物件 #}
+        {% for menuItem in menu %}
+        <li>
+            <h3>
+                <a href="{{ menuItem.href }}" target="_self">{{ menuItem.name }}</a>
+            </h3>
+        </li>
+        {% endfor %}
+
+        {% if session.user|default %}
+        <li class="userItem">
+            <button id="userBtn">
+                <span>{{ session.user }}</span>
+                <span class="menu-arrow"></span>
+            </button>
+            {# drop down menu #}
+            <div id="userMenuContainer">
+                <div id="userMenuContent">
+                    <div>aaaaaaaa</div>
+                </div>
+            </div>
+
+        </li>
+        {% else %}
+        <li>
+            <button id="openLoginPanelBtn">登入</button>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+
+<div id="loginPanelContainer">
+    <form id="loginForm">
+        <div id="login_msg" hidden></div>
+        <label for="email">讀者信箱：</label>
+        <input type="text" name="userEmail" id="email" value="asd@gmail.com"><br>
+
+        <label for="pass">密碼：</label>
+        <input type="password" name="userPass" id="pass" value="789456">
+
+        <div>
+            <button type="submit" id="loginBtn">登入</button>
+            <button id="cancelBtn">取消</button>
+        </div>
+    </form>
+</div>
