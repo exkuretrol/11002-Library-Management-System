@@ -94,7 +94,8 @@ $router->get('/debug', function () use ($twig, $db, $menu) {
         'session' => $_SESSION,
         'menu' => $menu
     ]);
-    $book = $db->findBookById(2);
+    echo pr($_SESSION);
+    var_dump($db->findExistRow("Reader", "Email", "asd@gmail.com"));
 
 });
 
@@ -113,7 +114,7 @@ $router->post('/auth/login', function () use ($db) {
         $jsonArray['user'] = $user;
         $jsonArray['status'] = true;
 
-        $_SESSION['user'] = $user;
+        $_SESSION['reader'] = $user;
     } else {
         $jsonArray['status'] = false;
         $jsonArray['status_text'] = "您的帳號或密碼錯誤，請重新輸入或重設密碼。";
@@ -121,14 +122,36 @@ $router->post('/auth/login', function () use ($db) {
     echo json_encode($jsonArray);
 });
 
-$router->post('auth/logout', function () {
-    unset($_SESSION["user"]);
+$router->post('/auth/register', function () use ($db) {
+    $jsonArray = array();
+
+    if (isset($_POST["method"]) & $_POST["method"] == "check") {
+        $result = $db->findExistRow("Reader", "Email", $_POST["mail"]);
+        $jsonArray["status"] = !$result;
+    } else {
+        $jsonArray = $_POST;
+    }
+    
+    echo json_encode($jsonArray);
+});
+
+$router->post('/auth/logout', function () {
+    unset($_SESSION["reader"]);
 
     $jsonArray = array();
     $jsonArray['status'] = true;
     $jsonArray['status_text'] = "登出成功";
     echo json_encode($jsonArray);
 });
+
+// before route middleware
+$router->before("GET|POST", '/reader/?.*', function () {
+    if (!isset($_SESSION["reader"])) {
+        header("location: /");
+        exit();
+    }
+});
+
 
 // 找不到捏 頁面
 $router->set404(function () use ($twig, $menu) {

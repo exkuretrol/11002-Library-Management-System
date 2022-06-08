@@ -1,57 +1,188 @@
-<nav>
-    <ul>
-        {# 導覽列物件 #}
-        {% for menuItem in menu %}
-        <li>
-            <h3>
-                <a href="{{ menuItem.href }}" target="_self">{{ menuItem.name }}</a>
-            </h3>
-        </li>
-        {% endfor %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a href="/" class="navbar-brand">
+            <img src="/images/manni-library-logo.png" alt="" width="174" height="61">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mb-2 me-auto mb-lg-0">
+                {% for menuItem in menu %}
+                <li class="nav-item ">
+                    <a class="nav-link active" aria-current="page" href="{{ menuItem.href }}">
+                        {{ menuItem.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
 
-        {% if session.user|default %}
-        <li class="userItem">
-            <button id="userBtn">
-                <span>{{ session.user }}</span>
-                <span class="menu-arrow"></span>
-            </button>
-            {# drop down menu #}
-            <div id="userMenuContainer">
-                <div id="userMenuContent">
-                    <button id="logoutBtn">
-                        <span>登出</span>
-                    </button>
-                    <button id="readerBtn">
-                        <span>讀者服務</span>
-                    </button>
-                </div>
-            </div>
+            <ul class="navbar-nav">
+                {% if session.reader|default %}
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ session.reader }}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#" id="readerBtn">讀者服務</a></li>
+                        <li><a class="dropdown-item" href="#" id="logoutBtn">登出</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#" id="openLoginPanelBtn"
+                        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        登入
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
 
-        </li>
-        {% else %}
-        <li>
-            <button id="openLoginPanelBtn">登入</button>
-        </li>
-        {% endif %}
-    </ul>
+        </div>
+    </div>
 </nav>
 
-<div id="loginPanelContainer">
-    <form id="loginForm">
-        <h1>登入會員</h1>
-        <div id="login_msg" hidden></div>
-        <label for="email">讀者信箱：</label>
-        <input type="text" name="userEmail" id="email" value="asd@gmail.com"><br>
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <form class="modal-dialog modal-dialog-centered" id="loginForm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">讀者登入</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3 has-validation">
+                    <label for="email" class="col-form-label">信箱</label>
+                    <input type="text" name="userEmail" id="email" value="asd@gmail.com" class="form-control ">
+                    <div id="login_msg" class="invalid-feedback"></div>
+                </div>
 
-        <label for="pass">密碼：</label>
-        <input type="password" name="userPass" id="pass" value="789456">
+                <div class="mb-3">
+                    <label for="pass" class="col-form-label">密碼</label>
+                    <input type="password" name="userPass" id="pass" value="789456" class="form-control">
+                </div>
 
-        <input type="button" value="忘記密碼" disabled>
-        <input type="button" value="註冊賬號" disabled>
 
-        <div>
-            <button type="submit" id="loginBtn">登入</button>
-            <button id="cancelBtn">取消</button>
+                <input type="button" value="忘記密碼" class="btn btn-light" disabled>
+                <input type="button" value="註冊賬號" class="btn btn-light" data-bs-target="#registerModal"
+                    data-bs-toggle="modal">
+
+                <div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="loginBtn">登入</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal fade" id="registerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="registerModalLabel" aria-hidden="true">
+    <form class="modal-dialog modal-dialog-centered needs-validation" id="registerForm" novalidate>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">讀者登記</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3 row d-flex">
+
+                    <label for="userEmail" class="col-form-label col-2">信箱</label>
+                    <div class="col-8 pe-0">
+                        <input type="email" name="email" id="userEmail" value="08170875@me.mcu.edu.tw"
+                            class="form-control">
+                    <div class="invalid-feedback">
+                        此信箱已被註冊，請使用另一個信箱。
+                    </div>
+                    </div>
+                    <div class="col-2 pe-0 flex-reverse">
+                        <button type="button" class="btn btn-secondary" id="checkEmailBtn">檢查</button>
+                    </div>
+                </div>
+
+                <div class="mb-3 has-validation row">
+                    <label for="userName" class="col-form-label col-2">姓名</label>
+                    <div class="col-10">
+
+                        <input type="text" name="name" id="userName" value="陳O瑋" class="form-control">
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter a message in the textarea.
+                      </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="userPass" class="col-form-label col-2">密碼</label>
+                    <div class="col-10">
+                        <input type="password" name="pass" id="userPass" value="1230" class="form-control">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="userPass2" class="col-form-label col-2 pe-0">確認密碼</label>
+                    <div class="col-10">
+                        <input type="password" name="pass" id="userPass2" value="1230" class="form-control">
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter a message in the textarea.
+                      </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="userPhone" class="col-form-label col-2 pe-0">手機號碼</label>
+                    <div class="col-10">
+                        <input type="text" name="phone" id="userPhone" value="0900000000" class="form-control">
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter a message in the textarea.
+                      </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="gender" class="col-2">性別</label>
+                    <div class="col-10">
+                        <div class="form-check form-check-inline">
+                            <input type="radio" class="form-check-input" id="genderMale" name="gender" value="男" required >
+                            <label class="form-check-label" for="genderMale">男性</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input type="radio" class="form-check-input" id="genderFemale" name="gender" value="女" required>
+                            <label class="form-check-label" for="genderFemale">女性</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input type="radio" class="form-check-input" id="genderUndefined" name="gender" value="不願透露" required>
+                            <label class="form-check-label" for="genderUndefined">不願透露</label>
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a message in the textarea.
+                          </div>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="datepicker" class="col-form-label col-2 pe-0">出生日期</label>
+                    <div class="col-10">
+                        <input type="text" data-provide="datepicker" id="datepicker" class="form-control" name="birthdate"
+                            value="2022-06-17">
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter a message in the textarea.
+                      </div>
+                </div>
+                <input type="hidden" name="method" value="register">
+
+                {# <div class="h-captcha" data-sitekey="187e95ec-eeab-4c79-bd85-2bbb3d25cd03"></div> #}
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-primary" id="registerBtn" >註冊</button>
+            </div>
         </div>
     </form>
 </div>

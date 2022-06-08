@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<html lang="zh-TW">
+<html lang="zh-TW" class="h-100">
 
 <head>
     {# 網頁
 
     <head></head> 內容 #}
     {% block head %}
-    <link rel="stylesheet" href="/stylesheets/style.css">
+    {#
+    <link rel="stylesheet" href="/stylesheets/style.css"> #}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="/stylesheets/a.style.css">
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src='https://www.hCaptcha.com/1/api.js' async defer></script>
+
     {% endblock %}
     {# 每一頁的視窗名稱 #}
     <title>{% block title -%}{% endblock title %} - 圖書館系統</title>
@@ -21,7 +32,7 @@
             });
 
             $("#openLoginPanelBtn").on("click", function () {
-                $("#loginPanelContainer").css("display", "flex");
+                $("#loginPanelContainer").css("display", "block");
             });
 
             // login Form
@@ -35,12 +46,13 @@
                         let result = JSON.parse(data);
                         console.table(result);
                         if (result["status"]) {
-                            $("#loginPanelContainer").css("display", "none");
+                            $("#loginPanelContainer").attr("hidden", "hidden");
                             location.reload();
                         }
                         else {
                             let msg = result["status_text"];
-                            $("#login_msg").removeAttr("hidden").html(msg);
+                            $("#login_msg").html(msg);
+                            $("#email").addClass("is-invalid");
                         }
                     }
                 });
@@ -53,15 +65,11 @@
                 e.preventDefault();
             });
 
-            $("#readerBtn").on("click", function (e) {
-
-            })
-
             $("#logoutBtn").on("click", function (e) {
                 $.ajax({
                     type: "POST",
                     url: "/auth/logout",
-                    success: function(data) {
+                    success: function (data) {
                         let result = JSON.parse(data);
                         console.table(result);
                     }
@@ -69,28 +77,123 @@
                 location.reload();
                 e.preventDefault();
             });
+
+            $("#readerBtn").on("click", function () {
+                window.location.replace("/reader");
+            });
+
+            $("#checkEmailBtn").on("click", function () {
+                let userEmail = $("#userEmail").removeClass("is-invalid").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/auth/register",
+                    data: JSON.parse(`{"mail": "${userEmail}", "method": "check"}`),
+                    success: function (data) {
+                        let json = JSON.parse(data);
+                        if (json["status"] == true)
+                            $("#userEmail").addClass("is-valid")
+                        else
+                            $("#userEmail").addClass("is-invalid")
+                    }
+                });
+            });
+
+            $("#registerBtn").on("click", function (e) {
+                e.preventDefault();
+
+                let form = $("#registerForm");
+                form.removeClass("was-validated");
+
+                let email = $("#userEmail");
+                let name = $("#userName");
+                let pass = $("#userPass");
+                let pass2 = $("#userPass2");
+                let phone = $("#userPhone");
+                let genderMale = $("#genderMale");
+                let genderFemale = $("#genderFemale");
+                let genderUndefined = $("#genderUndefined");
+                let birthdate = $("#datepicker");
+                let result = true;
+
+                if (!email.hasClass("is-valid")) {
+                    result = false;
+                    email.addClass("is-invalid");
+                    return;
+                };
+
+                name.val() == "" ? name.addClass("is-invalid") : name.addClass("is-valid");
+                if (pass.val() !== pass2.val()) {
+                    pass2.addClass("is-invalid");
+                    result = false;
+                } else {
+                    pass2.addClass("is-valid");
+                    pass.addClass("is-valid");
+                }
+                if (phone.val() == "") {
+                    phone.addClass("is-invalid")
+                    result = false;
+                } else {
+                    phone.addClass("is-valid")
+                };
+
+                if (birthdate.val() == "") {
+                    birthdate.addClass("is-invalid");
+                    result = false;
+                } else {
+                    birthdate.addClass("is-valid");
+                };
+
+                result = $("input[type='radio']:checked").length == 1 ? true : false;
+
+                form.addClass("was-validated");
+                if (result) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/auth/register",
+                        data: form.serialize(),
+                        success: function (data) {
+                            console.table(JSON.parse(data));
+                        }
+                    });
+
+                }
+
+
+
+            });
+
+            $('#datepicker').datepicker({
+                format: 'yyyy-mm-dd'
+            });
         });
     </script>
     {% endblock extraScript %}
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
 
     {# 導覽列 #}
     {% include "navigationBar.twig" %}
 
     {# 主要內容 #}
-    <div id="content">
+    <div class="container">
         {% block content %}
         {% endblock %}
     </div>
 
     {# 網頁底部 #}
     {% block footer %}
-    <footer>
-        <p align="center">2022</p>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted">
+                2022
+            </span>
+        </div>
     </footer>
     {% endblock footer %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

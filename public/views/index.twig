@@ -6,23 +6,57 @@
 
 {# html頭 #}
 {% block head %}
-  {{ parent() }}
+{{ parent() }}
 {% endblock head %}
 
 {# 主頁內容 #}
 {% block content %}
-<img src="images/manni-library-logo.png" alt=""><h1>Manni圖書館</h1>
+
+<section class="bg-light p-5 rounded mt-4">
+
 <form action="/discovery" method="get" id="searchForm">
-  <label for="searchBar">搜尋：</label>
-  <input type="text" name="search" id="searchBar" value="學">
-  <button type="submit">送出</button>
+  <div class="mb-3">
+    <label for="searchBar" class="form-label">搜尋書目：</label>
+    <input type="text" name="search" id="searchBar" value="學" class="form-control" placeholder="輸入檢索詞">
+
+  </div>
+  <button type="submit" class="btn btn-primary">送出</button>
 </form>
+</section>
+
+<section class="bg-body row  overflow-hidden">
+  <div class="col-4 g-4">
+    <div class="container py-3 bg-light rounded mb-4">
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate minus impedit aperiam. Eum dolore officiis ullam. Ab omnis minus recusandae explicabo iure voluptatum, voluptas praesentium eaque. Cum aliquid nesciunt enim?
+Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia numquam libero tenetur quaerat. Veritatis autem obcaecati voluptatum assumenda, deserunt sunt numquam laudantium exercitationem? Veritatis quasi repellat obcaecati aspernatur, enim hic!
+    </div>
+    <div class="container py-3 bg-light rounded mb-4">
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate minus impedit aperiam. Eum dolore officiis ullam. Ab omnis minus recusandae explicabo iure voluptatum, voluptas praesentium eaque. Cum aliquid nesciunt enim?
+    </div>
+  </div>
+  <div class="col-8 g-4">
+    <div class="container py-3 bg-light rounded mb-4">
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
+    </div>
+    <div class="container py-3 bg-light rounded mb-4">
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
+    </div>
+
+  </div>
+
+</section>
+
 {% endblock %}
 
 {% block extraScript %}
-  {{ parent() }}
+{{ parent() }}
 {% endblock extraScript %}
 {# html腳 #}
 {% block footer %}
-  {{ parent() }}
+{{ parent() }}
 {% endblock footer %}
