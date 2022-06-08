@@ -1,0 +1,28 @@
+{# 延伸 base.twig #}
+{% extends "base.twig" %}
+
+{# 頁面標題 #}
+{% block title %}主頁{% endblock title %}
+
+{# html頭 #}
+{% block head %}
+{{ parent() }}
+{% endblock head %}
+
+{# 內容 #}
+{% block content %}
+<ul>
+  <li>{{ book.Title }}</li>
+  <li>作者<ul>
+    {% for author in book.Author %}
+    <li>{{ author }}</li>
+    {% endfor %}
+  </ul></li>
+  <li>{{ book.Publisher }}</li>
+</ul>
+{% endblock %}
+
+{# html腳 #}
+{% block footer %}
+{{ parent() }}
+{% endblock footer %}

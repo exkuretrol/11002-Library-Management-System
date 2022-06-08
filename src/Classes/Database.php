@@ -39,15 +39,19 @@ class Database
         }
     }
 
-    public function findExistRow($table, $attr, $target, $returnResult = false)
+    public function findExistRow($table, $attr, $target, $returnResult = false, $partialMatch = false)
     {
         if (!$this->conn) {
             $this->getConnection();
         }
         try {
-            $sql = "select * from `$table` where `$attr` = ?;";
+            if (!$partialMatch)
+                $sql = "select * from `$table` where `$attr` = :target;";
+            else
+                $sql = "select * from `$table` where `$attr` like concat('%', :target, '%');";
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute(array($target));
+            $stmt->bindParam("target", $target, \PDO::PARAM_STR);
+            $stmt->execute();
             if ($returnResult) $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             if (!$returnResult) $result = $stmt->rowCount() !==0 ? true : false;
             return $result;
@@ -55,6 +59,14 @@ class Database
             echo "<p>" . $exception->getMessage() . "</p>";
             exit;
         }
+    }
+
+    public function findExistBooks($bookName) {
+        return $this->findExistRow("Book", "Title", $bookName, true, true); 
+    }
+
+    public function findBookById($bookNo) {
+        return $this->findExistRow("Book", "BookNumber", $bookNo, true)[0]; 
     }
 
     public function auth($userEmail, $userPass) {

@@ -10,6 +10,3 @@ $dotenv -> load();
 // twig
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/public/views');
 $twig = new \Twig\Environment($loader);
-// $twig -> addFunction(new \Twig_SimpleFunction('asset', function($asset) {
-//   return sprintf('./assets/%s', ltrim($asset, '/'));
-// }));

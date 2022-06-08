@@ -2,81 +2,105 @@
 declare (strict_types = 1);
 
 // Load our autoloader
-require_once('../bootstrap.php');
+require_once '../bootstrap.php';
 
-function nav()
-{
-    $menu = [
-        '首頁' => [
-            'name' => '首頁',
-            'href' => '/',
-        ],
-        '主題' => [
-            'name' => '主題館藏',
-            'href' => '/collection',
-        ],
-        '關於' => [
-            'name' => '關於',
-            'href' => '/about',
-        ],
-        '除錯' => [
-            'name' => '除錯頁面',
-            'href' => '/debug',
-        ],
-        '登入' => [
-            'name' => '讀者登入',
-            'href' => '/login',
-        ],
-    ];
-    if (isset($_SESSION["user"])) {
-        unset($menu["登入"]);
-    }
-
-    return $menu;
-}
+$menu = [
+    '首頁' => [
+        'name' => '首頁',
+        'href' => '/',
+    ],
+    '主題' => [
+        'name' => '主題館藏',
+        'href' => '/collection',
+    ],
+    '關於' => [
+        'name' => '關於',
+        'href' => '/about',
+    ],
+    '除錯' => [
+        'name' => '除錯頁面',
+        'href' => '/debug',
+    ],
+];
 
 use function \Util\pr;
+use \Classes\Database as db;
+$db = new db();
 
 /**
  * Get method
  **/
-// use \Library\World as World;
-use \Classes\Database as db;
-
-$db = new db();
 
 // Create Router instance
 $router = new \Bramus\Router\Router();
 
 // 首頁
-$router->get('/', function () use ($twig) {
+$router->get('/', function () use ($twig, $menu) {
     echo $twig->render('index.twig', [
-        'menu' => nav(),
         'session' => $_SESSION,
+        'menu' => $menu
     ]);
 });
 
-// 讀者登入
-$router->get('/login', function () use ($twig) {
-    echo $twig->render('login.twig', ['menu' => nav()]);
+// 搜尋書籍
+$router->get('/discovery', function () use ($twig, $menu, $db) {
+    $target = $_GET["search"];
+    $results = $db->findExistBooks($target);
+    echo $twig->render('discovery.twig', [
+        'session' => $_SESSION,
+        'menu' => $menu,
+        'results' => $results
+    ]);
 });
 
-// 關於頁面
-$router->get('/about', function () use ($twig) {
-    echo $twig->render('about.twig', ['menu' => nav()]);
+// 書籍
+$router->get('/discovery/book(/\d+)?', function ($bookNO = null) use ($twig, $menu, $db) {
+    $book = $db->findBookById($bookNO);
+    $book["Author"] = explode("|", $book["Author"]);
+    echo $twig->render("book.twig", [
+        'session' => $_SESSION,
+        'book' => $book,
+        'menu' => $menu
+    ]);
 });
 
-// 除錯頁面
-$router->get('/debug', function () use ($twig, $db) {
-    echo $twig->render('debug.twig', ['menu' => nav()]);
-    pr($db->execute("select * from Moderator", true));
-    // var_dump($db->findExistRowNum("Moderator", "Email", "0870875@me.mcu.edu.tw"));
+// 關於
+$router->get('/reader', function () use ($twig, $menu) {
+    echo $twig->render('about.twig', [
+        'session' => $_SESSION,
+        'menu' => $menu
+    ]);
+});
+
+// 關於
+$router->get('/about', function () use ($twig, $menu) {
+    echo $twig->render('about.twig', [
+        'session' => $_SESSION,
+        'menu' => $menu
+    ]);
+});
+
+// 主題館藏
+$router->get('/collection', function () use ($twig, $menu) {
+    echo $twig->render('collection.twig', [
+        'session' => $_SESSION,
+        'menu' => $menu
+    ]);
+});
+
+// 除錯
+$router->get('/debug', function () use ($twig, $db, $menu) {
+    echo $twig->render('debug.twig', [
+        'session' => $_SESSION,
+        'menu' => $menu
+    ]);
+    $book = $db->findBookById(2);
+
 });
 
 /**
  * Post method
  */
-
 $router->post('/auth/login', function () use ($db) {
     // header('Content-Type: application/json');
     $userEmail = $_POST["userEmail"];
@@ -97,10 +121,22 @@ $router->post('/auth/login', function () use ($db) {
     echo json_encode($jsonArray);
 });
 
+$router->post('auth/logout', function () {
+    unset($_SESSION["user"]);
+
+    $jsonArray = array();
+    $jsonArray['status'] = true;
+    $jsonArray['status_text'] = "登出成功";
+    echo json_encode($jsonArray);
+});
+
 // 找不到捏 頁面
-$router->set404(function () {
+$router->set404(function () use ($twig, $menu) {
     header('HTTP/1.1 404 Not Found');
-    echo "找不到捏";
+    echo $twig->render("404.twig", [
+        'session' => $_SESSION,
+        'menu' => $menu
+    ]);
 });
 
 // 執行

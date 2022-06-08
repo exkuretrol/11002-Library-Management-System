@@ -18,7 +18,12 @@
             {# drop down menu #}
             <div id="userMenuContainer">
                 <div id="userMenuContent">
-                    <div>aaaaaaaa</div>
+                    <button id="logoutBtn">
+                        <span>登出</span>
+                    </button>
+                    <button id="readerBtn">
+                        <span>讀者服務</span>
+                    </button>
                 </div>
             </div>
 
@@ -33,12 +38,16 @@
 
 <div id="loginPanelContainer">
     <form id="loginForm">
+        <h1>登入會員</h1>
         <div id="login_msg" hidden></div>
         <label for="email">讀者信箱：</label>
         <input type="text" name="userEmail" id="email" value="asd@gmail.com"><br>
 
         <label for="pass">密碼：</label>
         <input type="password" name="userPass" id="pass" value="789456">
+
+        <input type="button" value="忘記密碼" disabled>
+        <input type="button" value="註冊賬號" disabled>
 
         <div>
             <button type="submit" id="loginBtn">登入</button>

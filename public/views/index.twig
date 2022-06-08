@@ -11,12 +11,17 @@
 
 {# 主頁內容 #}
 {% block content %}
-<img src="https://placekitten.com/200/300" alt=""><h1>Manni圖書館</h1>
-<label for="searchBar">搜尋：</label>
-<input type="text" name="searchBar" id="searchBar">
-<button type="submit">送出</button>
+<img src="images/manni-library-logo.png" alt=""><h1>Manni圖書館</h1>
+<form action="/discovery" method="get" id="searchForm">
+  <label for="searchBar">搜尋：</label>
+  <input type="text" name="search" id="searchBar" value="學">
+  <button type="submit">送出</button>
+</form>
 {% endblock %}
 
+{% block extraScript %}
+  {{ parent() }}
+{% endblock extraScript %}
 {# html腳 #}
 {% block footer %}
   {{ parent() }}

@@ -7,17 +7,16 @@
 
     <head></head> 內容 #}
     {% block head %}
-    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     {% endblock %}
     {# 每一頁的視窗名稱 #}
-    <title>{% block title %}{% endblock title %} - 圖書館系統</title>
+    <title>{% block title -%}{% endblock title %} - 圖書館系統</title>
     {% block extraScript %}
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            $("#userBtn").on("click", function() {
+            $("#userBtn").on("click", function () {
                 $("#userMenuContainer").css("display", "block");
             });
 
@@ -37,6 +36,7 @@
                         console.table(result);
                         if (result["status"]) {
                             $("#loginPanelContainer").css("display", "none");
+                            location.reload();
                         }
                         else {
                             let msg = result["status_text"];
@@ -50,6 +50,23 @@
 
             $("#cancelBtn").on("click", function (e) {
                 $("#loginPanelContainer").css("display", "none");
+                e.preventDefault();
+            });
+
+            $("#readerBtn").on("click", function (e) {
+
+            })
+
+            $("#logoutBtn").on("click", function (e) {
+                $.ajax({
+                    type: "POST",
+                    url: "/auth/logout",
+                    success: function(data) {
+                        let result = JSON.parse(data);
+                        console.table(result);
+                    }
+                })
+                location.reload();
                 e.preventDefault();
             });
         });

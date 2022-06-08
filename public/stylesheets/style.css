@@ -83,7 +83,7 @@ nav>ul>li.userItem {
   position: relative;
 }
 
-nav>ul>li>button {
+nav>ul>li button {
   border: 0;
   display: flex;
   cursor: pointer;
