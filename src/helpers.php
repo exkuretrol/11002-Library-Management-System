@@ -2,7 +2,5 @@
 namespace Util;
 
 function pr($var) {
-  echo "<pre>";
-  echo print_r($var);
-  echo "</pre>";
+  return "<pre>" . print_r($var, true) . "</pre>";
 }

@@ -56,9 +56,55 @@ class Database
             if (!$returnResult) $result = $stmt->rowCount() !==0 ? true : false;
             return $result;
         } catch (PDOException $e) {
-            echo "<p>" . $exception->getMessage() . "</p>";
+            echo "<p>" . $e->getMessage() . "</p>";
             exit;
         }
+    }
+
+    public function insertOneRow($table, $insertArr, $colArr) {
+        if (!$this->conn) {
+            $this->getConnection();
+        }
+        try {
+            $colStr = $this->concatArr($colArr);
+            $insertStr = $this->concatArr($insertArr, true);
+            $sql = "insert into `{$table}` (${colStr}) values (${insertStr})";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+        }
+        catch (PDOException $e) {
+            echo "<p>" . $e->getMessage() . "</p>";
+            exit;
+        }
+    }
+
+    public function concatArr($Arr, $isStr = false) {
+        $str = "";
+        $symbol = "`";
+        if ($isStr) $symbol = "'";
+        foreach($Arr as $item) $str .= "{$symbol}{$item}${symbol}, ";
+        $str = substr($str, 0, -2);
+        return $str;
+    }
+
+    public function register($insertArr) {
+        $result = true;
+        $colArr = array("Email", "Password", "Name", "Gender", "BirthDate", "PhoneNum");
+        $arrangedArr = array(
+            $insertArr["email"],
+            $insertArr["pass"],
+            $insertArr["name"],
+            $insertArr["gender"],
+            $insertArr["birthdate"],
+            $insertArr["phone"],
+        );
+        if (!$this->findExistRow("Reader", "Email", $insertArr["email"])) {
+            $this->insertOneRow("Reader", $arrangedArr, $colArr);
+        } else {
+            $result = false;
+        }
+
+        return $result;
     }
 
     public function findExistBooks($bookName) {

@@ -1,6 +1,27 @@
+{# 延伸 base.twig #}
 {% extends "base.twig" %}
-{% block title -%}
-  除錯頁面
-{% endblock title %}
+
+{# 頁面標題 #}
+{% block title %}除錯頁面{% endblock title %}
+
+{# html頭 #}
+{% block head %}
+  {{ parent() }}
+{% endblock head %}
+
+{# 內容 #}
+{% block content %}
+
+<div class="bg-light mt-4 p-5 rounded">
+
+{% for bug in debug %}
+  {{ bug | raw }}
+{% endfor %}
+</div>
+
+{% endblock %}
+
+{# html腳 #}
 {% block footer %}
+  {{ parent() }}
 {% endblock footer %}

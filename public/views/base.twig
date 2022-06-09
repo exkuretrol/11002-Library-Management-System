@@ -36,6 +36,7 @@
             });
 
             // login Form
+            // TODO: 移除重新整理，使用更新 html 的方式刷新
             $("#loginBtn").on("click", function (e) {
                 let form = $("#loginForm");
                 $.ajax({
@@ -152,7 +153,11 @@
                         url: "/auth/register",
                         data: form.serialize(),
                         success: function (data) {
-                            console.table(JSON.parse(data));
+                            let json  = JSON.parse(data);
+                            console.table(json);
+                            $(".btn-close").click();
+                            $("#modalMessage").html(json["status_text"]);
+                            $("#messageModalBtn").click();
                         }
                     });
 
@@ -170,7 +175,7 @@
     {% endblock extraScript %}
 </head>
 
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100" style="padding-top: 87px;">
 
     {# 導覽列 #}
     {% include "navigationBar.twig" %}

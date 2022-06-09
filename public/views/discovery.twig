@@ -6,20 +6,46 @@
 
 {# html頭 #}
 {% block head %}
-  {{ parent() }}
+{{ parent() }}
 {% endblock head %}
 
 {# 內容 #}
 {% block content %}
-  <ol>
-  {% for book in results %}
-    <li><a href="/discovery/book/{{ book.BookNumber }}" target="_self">{{ book.Title }}</a>
-    </li>
-  {% endfor %}
-  </ol>
+
+{% for book in results %}
+<div class="card mb-3" style="max-width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{ book.ImgPath|replace({'[path]': " images/books"}) }}" class="img-fluid rounded-start"
+        alt="{{ book.Title }}">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ book.Title }}</h5>
+        {# <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
+          content. This content is a little bit longer.</p> #}
+        <p class="card-text"><small class="text-muted">{{ book.Author|replace({'|': '; '}) }}.</small></p>
+        <input type="hidden" name="bookNumber" value="{{ book.BookNumber }}">
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 {% endblock %}
+
+{% block extraScript %}
+{{ parent() }}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    $(".card").on("click", function (e) {
+      let bookNO = $(this).find("input[name='bookNumber'").val();
+      window.open(`/discovery/book/${bookNO}`, "_self");
+    });
+  });
+</script>
+{% endblock extraScript %}
 
 {# html腳 #}
 {% block footer %}
-  {{ parent() }}
+{{ parent() }}
 {% endblock footer %}

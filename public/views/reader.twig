@@ -2,18 +2,59 @@
 {% extends "base.twig" %}
 
 {# 頁面標題 #}
-{% block title %}主頁{% endblock title %}
+{% block title %}讀者服務{% endblock title %}
 
 {# html頭 #}
 {% block head %}
-  {{ parent() }}
+{{ parent() }}
 {% endblock head %}
 
 {# 內容 #}
 {% block content %}
+<section class="bg-body p-5 rounded mt-4">
+  <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#pills-dashboard"
+        type="button" role="tab" aria-controls="pills-dashboard" aria-selected="true">儀表板</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-request-tab" data-bs-toggle="pill" data-bs-target="#pills-request"
+        type="button" role="tab" aria-controls="pills-request" aria-selected="false">已借閱</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-reserved-tab" data-bs-toggle="pill" data-bs-target="#pills-reserved"
+        type="button" role="tab" aria-controls="pills-reserved" aria-selected="false">已預約/調閱</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-fine-tab" data-bs-toggle="pill" data-bs-target="#pills-fine" type="button"
+        role="tab" aria-controls="pills-fine" aria-selected="false">罰款</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
+        type="button" role="tab" aria-controls="pills-profile" aria-selected="false">個人資料</button>
+    </li>
+  </ul>
+  <div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-dashboard" role="tabpanel" aria-labelledby="pills-dashboard-tab">
+      儀表板</div>
+    <div class="tab-pane fade" id="pills-request" role="tabpanel" aria-labelledby="pills-request-tab">已借閱</div>
+    <div class="tab-pane fade" id="pills-reserved" role="tabpanel" aria-labelledby="pills-reserved-tab">已預約</div>
+    <div class="tab-pane fade" id="pills-fine" role="tabpanel" aria-labelledby="pills-fine-tab">罰款</div>
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+      <h5>個人資料</h5>
+
+      <ul>
+        {% for info in infos %}
+        <li>{{ info }}</li>
+        {% endfor %}
+      </ul>
+
+    </div>
+  </div>
+</section>
 {% endblock %}
 
 {# html腳 #}
 {% block footer %}
-  {{ parent() }}
+{{ parent() }}
 {% endblock footer %}
