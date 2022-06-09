@@ -19,7 +19,7 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-    <script src='https://www.hCaptcha.com/1/api.js' async defer></script>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 
     {% endblock %}
     {# 每一頁的視窗名稱 #}
@@ -153,7 +153,7 @@
                         url: "/auth/register",
                         data: form.serialize(),
                         success: function (data) {
-                            let json  = JSON.parse(data);
+                            let json = JSON.parse(data);
                             console.table(json);
                             $(".btn-close").click();
                             $("#modalMessage").html(json["status_text"]);
