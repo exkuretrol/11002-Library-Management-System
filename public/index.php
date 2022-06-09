@@ -81,17 +81,15 @@ $router->get('/reader', function () use ($twig, $menu, $db) {
 });
 
 $router->get('/admin', function () use ($twig, $db) {
-        echo pr($_SERVER);
-
         $user = $_SERVER['PHP_AUTH_USER'];
         $pass = $_SERVER['PHP_AUTH_PW'];
 
-        // $row = $db->findExistRow("Moderator", "Email", $user);
-        // if (count($row) == 0) {
-        //     $validated = false;
-        // } else {
-        //     if ($row["Password"] != $pass) $validated = false;
-        // }
+        $row = $db->findExistRow("Moderator", "Email", $user, true);
+        if (count($row) == 0) {
+            $validated = false;
+        } else {
+            if ($row[0]["Password"] !== $pass) $validated = false;
+        }
 
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
             header('WWW-Authenticate: Basic realm="My Realm"');
@@ -101,7 +99,8 @@ $router->get('/admin', function () use ($twig, $db) {
         }
         else {
             echo "<p>Welcome $user.</p>";
-echo "<p>Congratulation, you are into the system.</p>";
+            echo "<p>Congratulation, you are into the system.</p>";
+            echo pr($_SERVER);
         }
 
     // }
@@ -130,7 +129,8 @@ $router->get('/debug', function () use ($twig, $db, $menu) {
         'menu' => $menu,
         'debug' => array(
             pr($_SESSION),
-            pr($_SERVER)
+            pr($_SERVER),
+            pr($db->findExistRow("Moderator", "Email", "08170875@me.mcu.edu.tw", true))
         ),
     ]);
 
