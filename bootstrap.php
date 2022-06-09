@@ -18,3 +18,5 @@ $dotenv->safeLoad();
 // twig
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/public/views');
 $twig = new \Twig\Environment($loader);
+
+list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['REDIRECT_HTTP_AUTHORIZATION'], 6)));
