@@ -18,6 +18,7 @@
     "require": {
         "twig/twig": "2.x",
         "vlucas/phpdotenv": "^5.4",
-        "bramus/router": "^1.6"
+        "bramus/router": "^1.6",
+        "monolog/monolog": "^3.1"
     }
 }
