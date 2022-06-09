@@ -81,6 +81,7 @@ $router->get('/reader', function () use ($twig, $menu, $db) {
 });
 
 $router->get('/admin', function () use ($twig, $db) {
+        header('WWW-Authenticate: Basic realm="My Realm"');
         $validated = true;
         $user = $_SERVER['PHP_AUTH_USER'];
         $pass = $_SERVER['PHP_AUTH_PW'];
@@ -92,7 +93,7 @@ $router->get('/admin', function () use ($twig, $db) {
             if ($row[0]["Password"] !== $pass) $validated = false;
         }
 
-        if ($validated) {
+        if (!$validated) {
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
             echo 'Text to send if user hits Cancel button';
