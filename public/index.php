@@ -174,7 +174,7 @@ $router->post('/auth/register', function () use ($db, $log) {
         $log->warning(print_r($_POST, true));
         $res = $db->register($_POST);
         $data = array(
-            'secret' => "",
+            'secret' => "0x420D379efAd8217b763b4236A6dd9A494aE8E310",
             'response' => $_POST['h-captcha-response'],
         );
         $verify = curl_init();
@@ -186,13 +186,13 @@ $router->post('/auth/register', function () use ($db, $log) {
 // var_dump($response);
         $responseData = json_decode($response);
         if ($responseData->success) {
-            // your success code goes here
+            $jsonArray["status"] = $res;
+            $jsonArray["status_text"] = $res ? "註冊成功，請使用註冊的信箱及密碼登入。" : "註冊失敗";
         } else {
-            // return error to user; they did not pass
+            $jsonArray["status"] = false;
+            $jsonArray["status_text"] = "驗證失敗";
         }
 
-        $jsonArray["status"] = $res;
-        $jsonArray["status_text"] = $res ? "註冊成功，請使用註冊的信箱及密碼登入。" : "註冊失敗";
     }
 
     echo json_encode($jsonArray);

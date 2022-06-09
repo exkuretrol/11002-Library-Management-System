@@ -179,7 +179,13 @@
                 </div>
                 <input type="hidden" name="method" value="register">
 
-                <div class="h-captcha" data-sitekey="187e95ec-eeab-4c79-bd85-2bbb3d25cd03"></div>
+                <div class="mb-3 row">
+                    <label class="col-form-label col-2 pe-0">Captcha</label>
+                    <div class="col-10">
+                        <div class="h-captcha" data-sitekey="187e95ec-eeab-4c79-bd85-2bbb3d25cd03"></div>
+                    </div>
+                </div>
+
 
             </div>
             <div class="modal-footer">
@@ -189,17 +195,18 @@
         </div>
     </form>
 </div>
-<input id="messageModalBtn" type="button" class="btn btn-light" data-bs-target="#exampleModalSm" data-bs-toggle="modal" style="display: none">
+<input id="messageModalBtn" type="button" class="btn btn-light" data-bs-target="#exampleModalSm" data-bs-toggle="modal"
+    style="display: none">
 
 <div class="modal fade" id="exampleModalSm" tabindex="-1" aria-labelledby="exampleModalSmModel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">系統訊息</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">系統訊息</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="modalMessage" class="modal-body">
+            </div>
         </div>
-        <div id="modalMessage" class="modal-body">
-        </div>
-      </div>
     </div>
-  </div>
+</div>
