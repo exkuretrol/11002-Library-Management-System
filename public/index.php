@@ -81,32 +81,28 @@ $router->get('/reader', function () use ($twig, $menu, $db) {
 });
 
 $router->get('/admin', function () use ($twig, $db) {
-        $validated = true;
-        $user = $_SERVER['PHP_AUTH_USER'];
-        $pass = $_SERVER['PHP_AUTH_PW'];
+    $validated = true;
+    $user = $_SERVER['PHP_AUTH_USER'];
+    $pass = $_SERVER['PHP_AUTH_PW'];
 
-        $row = $db->findExistRow("Moderator", "Email", $user, true);
-        echo pr($row[0]);
-        if (count($row) == 0) {
+    $row = $db->findExistRow("Moderator", "Email", $user, true);
+    if (count($row) == 0) {
+        $validated = false;
+    } else {
+        if ($row[0]["Password"] !== $pass) {
             $validated = false;
-        } else {
-            if ($row[0]["Password"] !== $pass) $validated = false;
         }
-        var_dump($validated);
+    }
 
-        if (!$validated | !isset($_SERVER['PHP_AUTH_USER'])) {
-            header('WWW-Authenticate: Basic realm="My Realm"');
-            header('HTTP/1.0 401 Unauthorized');
-            echo 'Text to send if user hits Cancel button';
-            echo pr($_SERVER);
-            exit;
-        }
-        else {
-            echo "<p>Welcome $user.</p>";
-            echo "<p>Congratulation, you are into the system.</p>";
-            echo pr($_SERVER);
-        }
-
+    if (!$validated | !isset($_SERVER['PHP_AUTH_USER'])) {
+        header('WWW-Authenticate: Basic realm="My Realm"');
+        header('HTTP/1.0 401 Unauthorized');
+        echo ':O';
+        exit;
+    } else {
+        echo "<p>Welcome $user.</p>";
+        echo "<p>Congratulation, you are into the system.</p>";
+    }
 });
 
 // 關於
@@ -133,7 +129,7 @@ $router->get('/debug', function () use ($twig, $db, $menu) {
         'debug' => array(
             pr($_SESSION),
             pr($_SERVER),
-            pr($db->findExistRow("Moderator", "Email", "08170875@me.mcu.edu.tw", true))
+            pr($db->findExistRow("Moderator", "Email", "08170875@me.mcu.edu.tw", true)),
         ),
     ]);
 
@@ -193,6 +189,13 @@ $router->post('/auth/logout', function () {
 // before route middleware
 $router->before("GET|POST", '/reader/?.*', function () {
     if (!isset($_SESSION["reader"])) {
+        header("location: /");
+        exit();
+    }
+});
+
+$router->before("POST", '/admin/?.*', function () {
+    if (!isset($_SESSION["admin"])) {
         header("location: /");
         exit();
     }
