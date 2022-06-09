@@ -81,21 +81,20 @@ $router->get('/reader', function () use ($twig, $menu, $db) {
 });
 
 $router->get('/admin', function () use ($twig, $db) {
-        header('WWW-Authenticate: Basic realm="My Realm"');
         $validated = true;
         $user = $_SERVER['PHP_AUTH_USER'];
         $pass = $_SERVER['PHP_AUTH_PW'];
 
-        $row = $db->findExistRow("Moderator", "Email", "08170875@me.mcu.edu.tw", true);
+        $row = $db->findExistRow("Moderator", "Email", $user, true);
         echo pr($row[0]);
         if (count($row) == 0) {
             $validated = false;
         } else {
-            if ($row[0]["Password"] !== "08170875") $validated = false;
+            if ($row[0]["Password"] !== $pass) $validated = false;
         }
         var_dump($validated);
 
-        if (!$validated) {
+        if (!$validated | !isset($_SERVER['PHP_AUTH_USER'])) {
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
             echo 'Text to send if user hits Cancel button';
