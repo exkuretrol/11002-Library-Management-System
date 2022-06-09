@@ -82,19 +82,17 @@ $router->get('/reader', function () use ($twig, $menu, $db) {
 
 $router->get('/admin', function () use ($twig, $db) {
 
-    if (!isset($_SESSION["admin"])) {
-        $validated = true;
         $user = $_SERVER['PHP_AUTH_USER'];
         $pass = $_SERVER['PHP_AUTH_PW'];
 
-        $row = $db->findExistRow("Moderator", "Email", $user);
-        if (count($row) == 0) {
-            $validated = false;
-        } else {
-            if ($row["Password"] != $pass) $validated = false;
-        }
+        // $row = $db->findExistRow("Moderator", "Email", $user);
+        // if (count($row) == 0) {
+        //     $validated = false;
+        // } else {
+        //     if ($row["Password"] != $pass) $validated = false;
+        // }
 
-        if (!$validated) {
+        if ($_SERVER['PHP_AUTH_USER'] !== "") {
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
             echo 'Text to send if user hits Cancel button';
@@ -105,7 +103,7 @@ $router->get('/admin', function () use ($twig, $db) {
 echo "<p>Congratulation, you are into the system.</p>";
         }
 
-    }
+    // }
 });
 
 // 關於
