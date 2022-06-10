@@ -45,6 +45,7 @@
                     data: form.serialize(),
                     success: function (data) {
                         let result = JSON.parse(data);
+                        let login = result["status"]
                         console.table(result);
                         if (result["status"]) {
                             $("#loginPanelContainer").attr("hidden", "hidden");

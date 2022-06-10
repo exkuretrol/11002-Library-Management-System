@@ -13,10 +13,6 @@ $menu = [
         'name' => '主題館藏',
         'href' => '/collection',
     ],
-    '關於' => [
-        'name' => '關於',
-        'href' => '/about',
-    ],
     '推薦書籍' => [
         'name' => '推薦書籍',
         'href' => '/recommend',
@@ -24,6 +20,10 @@ $menu = [
     '除錯' => [
         'name' => '除錯頁面',
         'href' => '/debug',
+    ],
+    '關於' => [
+        'name' => '關於',
+        'href' => '/about',
     ],
 ];
 
@@ -39,10 +39,14 @@ $db = new db();
 $router = new \Bramus\Router\Router();
 
 // 首頁
-$router->get('/', function () use ($twig, $menu) {
+$router->get('/', function () use ($twig, $menu, $db) {
+    $maintain = $db->execute("select * from Post where Type = 0 and (`DueDate` >= CURRENT_DATE or isnull(`DueDate`)) order by PublishDate");
+    $news = $db->execute("select * from Post where Type = 1 and (`DueDate` >= CURRENT_DATE or isnull(`DueDate`)) order by PublishDate");
     echo $twig->render('index.twig', [
         'session' => $_SESSION,
         'menu' => $menu,
+        'maintain' => $maintain,
+        'news' => $news,
     ]);
 });
 
@@ -84,28 +88,29 @@ $router->get('/reader', function () use ($twig, $menu, $db) {
     ]);
 });
 
-$router->get('/admin', function () use ($twig, $db) {
+$router->get('/admin', function () use ($router, $twig, $menu, $db) {
     $validated = true;
-    $user = $_SERVER['PHP_AUTH_USER'];
-    $pass = $_SERVER['PHP_AUTH_PW'];
-
-    $row = $db->findExistRow("Moderator", "Email", $user, true);
-    if (count($row) == 0) {
-        $validated = false;
-    } else {
-        if ($row[0]["Password"] !== $pass) {
+    if (isset($_SERVER['PHP_AUTH_USER'])) {
+        $user = $_SERVER['PHP_AUTH_USER'];
+        $pass = $_SERVER['PHP_AUTH_PW'];
+        $row = $db->findExistRow("Moderator", "Email", $user, true);
+        if (count($row) == 0) {
             $validated = false;
+        } else {
+            if ($row[0]["Password"] !== $pass) {
+                $validated = false;
+            }
         }
     }
 
     if (!$validated | !isset($_SERVER['PHP_AUTH_USER'])) {
         header('WWW-Authenticate: Basic realm="My Realm"');
         header('HTTP/1.0 401 Unauthorized');
-        echo ':O';
-        exit;
+        echo $twig->render("404.twig", ['menu' => $menu]);
     } else {
-        echo "<p>Welcome $user.</p>";
-        echo "<p>Congratulation, you are into the system.</p>";
+        echo $twig->render("admin.twig", [
+            'menu' => $menu,
+        ]);
     }
 });
 
@@ -125,6 +130,14 @@ $router->get('/collection', function () use ($twig, $menu) {
     ]);
 });
 
+// 書籍推薦
+$router->get('/recommend', function () use ($twig, $menu) {
+    echo $twig->render('recommend.twig', [
+        'session' => $_SESSION,
+        'menu' => $menu,
+    ]);
+});
+
 // 除錯
 $router->get('/debug', function () use ($twig, $db, $menu) {
     echo $twig->render('debug.twig', [
@@ -132,8 +145,8 @@ $router->get('/debug', function () use ($twig, $db, $menu) {
         'menu' => $menu,
         'debug' => array(
             pr($_SESSION),
-            pr($_SERVER),
             pr($db->findExistRow("Moderator", "Email", "08170875@me.mcu.edu.tw", true)),
+            'cookie' => pr($_COOKIE),
         ),
     ]);
 
@@ -148,13 +161,20 @@ $router->post('/auth/login', function () use ($db, $log) {
     $userEmail = $_POST["userEmail"];
     $userPass = $_POST["userPass"];
     $jsonArray = array();
+    $arr_cookie_options = array(
+        'expires' => time() + 60 * 60 * 24 * 30,
+        'path' => '/',
+        'domain' => '.example.com', // leading dot for compatibility or use subdomain
+        'secure' => true, // or false
+        'httponly' => true, // or false
+        'samesite' => 'None', // None || Lax  || Strict
+    );
 
     if ($db->auth($userEmail, $userPass)) {
         $row = $db->findExistRow("Reader", "Email", $userEmail, true)[0];
         $user = $row["Name"];
         $jsonArray['user'] = $user;
         $jsonArray['status'] = true;
-
         $_SESSION['reader'] = $user;
         $_SESSION['email'] = $userEmail;
     } else {
@@ -210,6 +230,13 @@ $router->post('/auth/logout', function () {
 
 // before route middleware
 $router->before("GET|POST", '/reader/?.*', function () {
+    if (!isset($_SESSION["reader"])) {
+        header("location: /");
+        exit();
+    }
+});
+
+$router->before("GET|POST", '/recommend/?.*', function () use ($twig) {
     if (!isset($_SESSION["reader"])) {
         header("location: /");
         exit();

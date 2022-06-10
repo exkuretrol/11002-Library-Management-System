@@ -7,6 +7,11 @@
 {# html頭 #}
 {% block head %}
 {{ parent() }}
+  <style>
+    span.text-muted {
+      display: inline-block;
+    }
+  </style>
 {% endblock head %}
 
 {# 主頁內容 #}
@@ -26,35 +31,35 @@
 <section class="bg-body row  overflow-hidden">
   <div class="col-4 g-4">
     <div class="container py-3 bg-light rounded mb-4">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate minus impedit aperiam. Eum dolore officiis
-      ullam. Ab omnis minus recusandae explicabo iure voluptatum, voluptas praesentium eaque. Cum aliquid nesciunt enim?
-      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia numquam libero tenetur quaerat. Veritatis autem
-      obcaecati voluptatum assumenda, deserunt sunt numquam laudantium exercitationem? Veritatis quasi repellat
-      obcaecati aspernatur, enim hic!
+      <h3 class="fw-lighter">最新消息</h3>
+      <ul>
+        {% for post in news %}
+        <li class="text-wrap">{{ post.Content }} <span class="text-muted">（{{ post.PublishDate }}）</li>
+        {% endfor %}
+      </ul>
     </div>
     <div class="container py-3 bg-light rounded mb-4">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate minus impedit aperiam. Eum dolore officiis
-      ullam. Ab omnis minus recusandae explicabo iure voluptatum, voluptas praesentium eaque. Cum aliquid nesciunt enim?
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi ipsam tempora excepturi deleniti assumenda, eius quibusdam quaerat aliquam esse iusto adipisci sunt commodi rem praesentium saepe nam repudiandae suscipit. Nam?
+      Consequatur repellendus debitis expedita ratione inventore voluptatum reiciendis natus voluptate, cupiditate, assumenda, odio sapiente? Quae vero eligendi dolore. Soluta animi cupiditate quaerat deleniti perspiciatis hic eveniet similique distinctio error fugit.
     </div>
   </div>
   <div class="col-8 g-4">
     <div class="container py-3 bg-light rounded mb-4">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque
-      libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
+      <h3 class="fw-lighter">系統維護公告</h3>
+      <ul>
+        {% for post in maintain %}
+        <li>{{ post.Content }} <span class="text-muted">（{{ post.PublishDate }}）</span></li>
+        {% endfor %}
+      </ul>
     </div>
     <div class="container py-3 bg-light rounded mb-4">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque
-      libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque
-      libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque
-      libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque
-      libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque
-      libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Non voluptatibus reprehenderit, quo amet animi atque
-      libero, aperiam nemo eligendi autem facilis. Mollitia, ipsum accusantium. Id non quidem molestias quia tempore.
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel maiores dignissimos, sit inventore aliquam quis deleniti enim rem repudiandae eaque? Quaerat placeat rerum vel fuga fugiat, in labore reprehenderit voluptatem!
+      Soluta vel asperiores doloremque quas sit fuga non quam architecto consequatur voluptates hic ad aliquid impedit eos dicta, ea, accusantium odit ducimus iste. Sint assumenda, veniam aut animi repellendus molestiae.
+      Dicta error culpa omnis, sit explicabo dolorem incidunt esse quibusdam possimus excepturi similique recusandae doloremque ut at a aliquam tempore repellendus cupiditate consequuntur illo? Iste nesciunt accusamus quam ad commodi.
+      Tenetur ea voluptates saepe quod, quae tempora nostrum amet praesentium officia et velit laudantium atque perferendis qui maiores quia nam assumenda eum doloribus aspernatur! Natus, quis? Sint itaque quo dolores?
+      Cum reprehenderit, id libero facere molestias repellat sapiente quibusdam, nesciunt minima quae accusantium omnis dignissimos, voluptates a. Voluptatibus inventore delectus velit nesciunt ullam, numquam laudantium vero, possimus quas ea quod!
+      Id, alias corrupti. Nemo nisi tempora ullam odit itaque inventore temporibus sint! Placeat sit in itaque obcaecati asperiores officiis temporibus voluptas officia, iste numquam! Dicta perspiciatis blanditiis voluptatibus molestiae maiores.
+      Sapiente recusandae, quisquam minus sed quia veritatis quam tempore totam assumenda expedita nemo sit labore sequi ex voluptates culpa eveniet, facere laborum a beatae? Et odit quas consequatur nostrum qui?
     </div>
 
   </div>
