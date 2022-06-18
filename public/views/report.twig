@@ -1,9 +1,43 @@
+{# 延伸 base.twig #}
 {% extends "base.twig" %}
 
-{% block title -%}
-  企劃書
-{% endblock title %}
+{# 頁面標題 #}
+{% block title %}計畫書{% endblock title %}
 
+{# html頭 #}
+{% block head %}
+{{ parent() }}
+{% endblock head %}
+
+{# 內容 #}
 {% block content %}
-{% endblock content %}
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <nav class="doc-links" id="doc-nav" aria-label="navigation">
+      <ul class="list-unstyled">
+        <li class="mb-1">
+          <button class="btn d-inline-flex align-items-center rounded collapsed" data-bs-toggle="collapse"
+            data-bs-target="#test" aria-expanded="false">
+            測試
+          </button>
+          <div class="collapse" id="test">
+            <ul class="list-unstyled fw-normal pb-1 small">
+              <li><a href="" class="d-inline-flex align-items-center rounded">頁面一</a></li>
+              <li><a href="" class="d-inline-flex align-items-center rounded">頁面一</a></li>
+              <li><a href="" class="d-inline-flex align-items-center rounded">頁面一</a></li>
+            </ul>
+          </div>
+        </li>
+        <li class="my-3 mx-4 border-top"></li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="doc-main order-1">
+  </main>
+</div>
+{% endblock %}
 
+{# html腳 #}
+{% block footer %}
+{{ parent() }}
+{% endblock footer %}

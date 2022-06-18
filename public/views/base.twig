@@ -173,13 +173,13 @@
     {% endblock extraScript %}
 </head>
 
-<body class="d-flex flex-column h-100" style="padding-top: 87px;">
+<body class="d-flex flex-column">
 
     {# 導覽列 #}
     {% include "navigationBar.twig" %}
 
     {# 主要內容 #}
-    <div class="container">
+    <div class="container mt-5">
         {% block content %}
         {% endblock %}
     </div>

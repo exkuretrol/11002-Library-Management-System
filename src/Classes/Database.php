@@ -6,6 +6,12 @@ class Database
 {
     private $conn;
 
+    /**
+     * 直接與資料庫連線，若連線未建立，則連線至資料庫
+     * ；若無，則新增一個連線。
+     *
+     * @return \PDO
+     */
     public function getConnection(): \PDO
     {
         // 如果連線不存在
@@ -24,7 +30,14 @@ class Database
         return $this->conn;
     }
 
-    public function execute($sql, $simple = false)
+    /**
+     * 直接執行指定的 sql 語法 
+     *
+     * @param [type] $sql sql 語法
+     * @param boolean $simple 使否用 FETCH_ASSOC 取回資料
+     * @return mixed
+     */
+    public function execute($sql, $simple = false): mixed
     {
         if (!$this->conn) {
             $this->getConnection();
@@ -39,7 +52,18 @@ class Database
         }
     }
 
-    public function findExistRow($table, $attr, $target, $returnResult = false, $partialMatch = false)
+    /**
+     * 找出一行資料
+     *
+     * @param [type] $table             資料表
+     * @param [type] $attr              欄位名稱
+     * @param [type] $target            where 後面放的字
+     * @param boolean $returnResult     是否返回結果，如果設為否，則回傳 true/false；
+     *                                  如果設為是，則回傳結果。
+     * @param boolean $partialMatch     是否部分匹配
+     * @return mixed
+     */
+    public function findExistRow($table, $attr, $target, $returnResult = false, $partialMatch = false): mixed
     {
         if (!$this->conn) {
             $this->getConnection();
@@ -61,6 +85,14 @@ class Database
         }
     }
 
+    /**
+     * 插入一行新資料列
+     *
+     * @param [type] $table         資料表名稱
+     * @param [type] $insertArr     插入資料的串列
+     * @param [type] $colArr        插入資料的欄位名稱
+     * @return void
+     */
     public function insertOneRow($table, $insertArr, $colArr) {
         if (!$this->conn) {
             $this->getConnection();
@@ -78,7 +110,15 @@ class Database
         }
     }
 
-    public function concatArr($Arr, $isStr = false) {
+    /**
+     * 將向量組合成 'item' 或是 `item`
+     *
+     * @param [type] $Arr       輸入向量
+     * @param boolean $isStr    是不是字串
+     * @return string           回傳字串
+     */
+    public function concatArr($Arr, $isStr = false): string
+    {
         $str = "";
         $symbol = "`";
         if ($isStr) $symbol = "'";
@@ -87,7 +127,14 @@ class Database
         return $str;
     }
 
-    public function register($insertArr) {
+    /**
+     * 註冊一名讀者
+     *
+     * @param [type] $insertArr 註冊資料向量
+     * @return bool             回傳 true/false
+     */
+    public function register($insertArr): bool
+    {
         $result = true;
         $colArr = array("Email", "Password", "Name", "Gender", "BirthDate", "PhoneNum");
         $arrangedArr = array(
@@ -107,24 +154,45 @@ class Database
         return $result;
     }
 
-    public function findExistBooks($bookName) {
+    /**
+     * 根據書名找出一本書
+     *
+     * @param [type] $bookName  書名
+     * @return array            書的資料向量
+     */
+    public function findExistBooks($bookName): array
+    {
         return $this->findExistRow("Book", "Title", $bookName, true, true); 
     }
 
-    public function findBookById($bookNo) {
+    /**
+     * 根據書的ID找出一本書
+     *
+     * @param [type] $bookNo    書的ID
+     * @return array            書的資料向量
+     */
+    public function findBookById($bookNo): bool
+    {
         return $this->findExistRow("Book", "BookNumber", $bookNo, true)[0]; 
     }
 
-    public function auth($userEmail, $userPass) {
+    /**
+     * 認證帳號
+     *
+     * @param [type] $userEmail 使用者 Email
+     * @param [type] $userPass  使用者密碼
+     * @return bool
+     */
+    public function auth($userEmail, $userPass): bool
+    {
         $row = $this->findExistRow("Reader", "Email", $userEmail, true);
 
         if (count($row) == 0) {
             $auth = false;
-            return;
+            return $auth;
         }
 
         $row = $row[0];
-
         $auth = ($userEmail == $row["Email"] & $userPass == $row["Password"]) ? true : false;
         return $auth;
     }

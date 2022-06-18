@@ -25,6 +25,14 @@ $menu = [
         'name' => '關於',
         'href' => '/about',
     ],
+    '管理頁面' => [
+        'name' => '管理頁面',
+        'href' => '/admin',
+    ],
+    '網站說明' => [
+        'name' => '網站說明',
+        'href' => '/report'
+    ]
 ];
 
 use function \Util\pr;
@@ -88,6 +96,7 @@ $router->get('/reader', function () use ($twig, $menu, $db) {
     ]);
 });
 
+// 管理頁面
 $router->get('/admin', function () use ($router, $twig, $menu, $db) {
     $validated = true;
     if (isset($_SERVER['PHP_AUTH_USER'])) {
@@ -106,9 +115,13 @@ $router->get('/admin', function () use ($router, $twig, $menu, $db) {
     if (!$validated | !isset($_SERVER['PHP_AUTH_USER'])) {
         header('WWW-Authenticate: Basic realm="My Realm"');
         header('HTTP/1.0 401 Unauthorized');
-        echo $twig->render("404.twig", ['menu' => $menu]);
+        echo $twig->render("404.twig", [
+            'session' => $_SESSION,
+            'menu' => $menu,
+        ]);
     } else {
         echo $twig->render("admin.twig", [
+            'session' => $_SESSION,
             'menu' => $menu,
         ]);
     }
@@ -150,6 +163,14 @@ $router->get('/debug', function () use ($twig, $db, $menu) {
         ),
     ]);
 
+});
+
+// 網站說明
+$router->get('/report', function () use ($twig, $menu) {
+    echo $twig->render('report.twig', [
+        'session' => $_SESSION,
+        'menu' => $menu,
+    ]);
 });
 
 /**
