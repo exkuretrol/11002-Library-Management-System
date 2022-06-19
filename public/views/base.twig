@@ -4,8 +4,7 @@
 
 <head>
     {% block head %}
-    
-    {# <link rel="stylesheet" href="/stylesheets/style.css"> #}
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +16,6 @@
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-
     {% endblock %}
     {# 每一頁的視窗名稱 #}
     <title>{% block title -%}{% endblock title %} - 圖書館系統</title>
@@ -28,8 +26,9 @@
                 $("#userMenuContainer").css("display", "block");
             });
 
-            $("#openLoginPanelBtn").on("click", function () {
+            $("#openLoginPanelBtn").on("click", function (e) {
                 $("#loginPanelContainer").css("display", "block");
+                e.preventDefault();
             });
 
             // login Form
@@ -168,12 +167,17 @@
             $('#datepicker').datepicker({
                 format: 'yyyy-mm-dd'
             });
+
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+              return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
         });
     </script>
     {% endblock extraScript %}
 </head>
 
-<body class="d-flex flex-column">
+<body class="d-flex flex-column h-100">
 
     {# 導覽列 #}
     {% include "navigationBar.twig" %}

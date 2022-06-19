@@ -11,14 +11,15 @@
 
 {# 內容 #}
 {% block content %}
-<section class="bg-body p-5 rounded mt-4">
+<section class="bg-body px-5 rounded">
   <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#pills-dashboard"
-        type="button" role="tab" aria-controls="pills-dashboard" aria-selected="true">儀表板</button>
+      <button class="nav-link" id="pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#pills-dashboard"
+        type="button" role="tab" aria-controls="pills-dashboard" aria-selected="true" disabled>儀表板</button>
     </li>
+    {# TODO: 續借書及功能 #}
     <li class="nav-item" role="presentation">
-      <button class="nav-link" id="pills-request-tab" data-bs-toggle="pill" data-bs-target="#pills-request"
+      <button class="nav-link active" id="pills-request-tab" data-bs-toggle="pill" data-bs-target="#pills-request"
         type="button" role="tab" aria-controls="pills-request" aria-selected="false">已借閱</button>
     </li>
     <li class="nav-item" role="presentation">
@@ -27,7 +28,7 @@
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="pills-fine-tab" data-bs-toggle="pill" data-bs-target="#pills-fine" type="button"
-        role="tab" aria-controls="pills-fine" aria-selected="false">罰款</button>
+        role="tab" aria-controls="pills-fine" aria-selected="false" disabled>罰款</button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
@@ -35,20 +36,66 @@
     </li>
   </ul>
   <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-dashboard" role="tabpanel" aria-labelledby="pills-dashboard-tab">
+    <div class="tab-pane fade" id="pills-dashboard" role="tabpanel" aria-labelledby="pills-dashboard-tab">
       儀表板</div>
-    <div class="tab-pane fade" id="pills-request" role="tabpanel" aria-labelledby="pills-request-tab">已借閱</div>
-    <div class="tab-pane fade" id="pills-reserved" role="tabpanel" aria-labelledby="pills-reserved-tab">已預約</div>
+    <div class="tab-pane fade show active" id="pills-request" role="tabpanel" aria-labelledby="pills-request-tab">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">編號</th>
+            <th scope="col">書籍名稱</th>
+            <th scope="col">借閱時間戳記</th>
+            <th scope="col">應還時間戳記</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in borrowed %}
+          <tr>
+            <th scope="row">{{ record.ID }}</th>
+            <td>{{ record.Title }}</td>
+            <td>{{ record.BorrowDate }}</td>
+            <td>{{ record.DueDate }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab-pane fade" id="pills-reserved" role="tabpanel" aria-labelledby="pills-reserved-tab">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">編號</th>
+            <th scope="col">書籍名稱</th>
+            <th scope="col">預借時間戳記</th>
+            <th scope="col">狀態</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in reserved %}
+          <tr>
+            <th>{{ record.ID }}</th>
+            <td>{{ record.Title }}</td>
+            <td>{{ record.Date }}</td>
+            {% if record.Status == 0 %}
+            <td>書籍準備中</td>
+            {% elseif record.Status == 1 %}
+            <td>請至流通櫃台取書</td>
+            {% else %}
+            <td>已借閱</td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     <div class="tab-pane fade" id="pills-fine" role="tabpanel" aria-labelledby="pills-fine-tab">罰款</div>
     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-      <h5>個人資料</h5>
-
       <ul>
         {% for info in infos %}
         <li>{{ info }}</li>
         {% endfor %}
       </ul>
-
     </div>
   </div>
 </section>

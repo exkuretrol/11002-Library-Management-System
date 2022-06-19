@@ -53,7 +53,7 @@ class Database
     }
 
     /**
-     * 找出一行資料
+     * 找出一行/多行資料
      *
      * @param [type] $table             資料表
      * @param [type] $attr              欄位名稱
@@ -171,7 +171,7 @@ class Database
      * @param [type] $bookNo    書的ID
      * @return array            書的資料向量
      */
-    public function findBookById($bookNo): bool
+    public function findBookById($bookNo): array
     {
         return $this->findExistRow("Book", "BookNumber", $bookNo, true)[0]; 
     }

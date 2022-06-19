@@ -7,17 +7,17 @@
 {# html頭 #}
 {% block head %}
 {{ parent() }}
-  <style>
-    span.text-muted {
-      display: inline-block;
-    }
-  </style>
+<style>
+  span.text-muted {
+    display: inline-block;
+  }
+</style>
 {% endblock head %}
 
 {# 主頁內容 #}
 {% block content %}
 
-<section class="bg-light p-5 rounded mt-4">
+<section class="bg-light p-4 rounded">
 
   <form action="/discovery" method="get" id="searchForm">
     <div class="mb-3">
@@ -32,40 +32,41 @@
   <div class="col-4 g-4">
     <div class="container py-3 bg-light rounded mb-4">
       <h3 class="fw-lighter">最新消息</h3>
-      <ul>
+      <ul class="list-unstyled">
         {% for post in news %}
-        <li class="text-wrap">{{ post.Content }} <span class="text-muted">（{{ post.PublishDate }}）</li>
+        <li class="text-wrap mb-2">{{ post.Content }} <span class="text-muted">（{{ post.PublishDate }}）</li>
         {% endfor %}
       </ul>
     </div>
     <div class="container py-3 bg-light rounded mb-4">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi ipsam tempora excepturi deleniti assumenda, eius quibusdam quaerat aliquam esse iusto adipisci sunt commodi rem praesentium saepe nam repudiandae suscipit. Nam?
-      Consequatur repellendus debitis expedita ratione inventore voluptatum reiciendis natus voluptate, cupiditate, assumenda, odio sapiente? Quae vero eligendi dolore. Soluta animi cupiditate quaerat deleniti perspiciatis hic eveniet similique distinctio error fugit.
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi ipsam tempora excepturi deleniti assumenda, eius
+      quibusdam quaerat aliquam esse iusto adipisci sunt commodi rem praesentium saepe nam repudiandae suscipit. Nam?
+      Consequatur repellendus debitis expedita ratione inventore voluptatum reiciendis natus voluptate, cupiditate,
+      assumenda, odio sapiente? Quae vero eligendi dolore. Soluta animi cupiditate quaerat deleniti perspiciatis hic
+      eveniet similique distinctio error fugit.
     </div>
   </div>
   <div class="col-8 g-4">
     <div class="container py-3 bg-light rounded mb-4">
       <h3 class="fw-lighter">系統維護公告</h3>
-      <ul>
+      <ul class="list-unstyled">
         {% for post in maintain %}
-        <li>{{ post.Content }} <span class="text-muted">（{{ post.PublishDate }}）</span></li>
+        <li class="mb-2 text-wrap">{{ post.Content }} <span class="text-muted">（{{ post.PublishDate }}）</span></li>
         {% endfor %}
       </ul>
     </div>
     <div class="container py-3 bg-light rounded mb-4">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel maiores dignissimos, sit inventore aliquam quis deleniti enim rem repudiandae eaque? Quaerat placeat rerum vel fuga fugiat, in labore reprehenderit voluptatem!
-      Soluta vel asperiores doloremque quas sit fuga non quam architecto consequatur voluptates hic ad aliquid impedit eos dicta, ea, accusantium odit ducimus iste. Sint assumenda, veniam aut animi repellendus molestiae.
-      Dicta error culpa omnis, sit explicabo dolorem incidunt esse quibusdam possimus excepturi similique recusandae doloremque ut at a aliquam tempore repellendus cupiditate consequuntur illo? Iste nesciunt accusamus quam ad commodi.
-      Tenetur ea voluptates saepe quod, quae tempora nostrum amet praesentium officia et velit laudantium atque perferendis qui maiores quia nam assumenda eum doloribus aspernatur! Natus, quis? Sint itaque quo dolores?
-      Cum reprehenderit, id libero facere molestias repellat sapiente quibusdam, nesciunt minima quae accusantium omnis dignissimos, voluptates a. Voluptatibus inventore delectus velit nesciunt ullam, numquam laudantium vero, possimus quas ea quod!
-      Id, alias corrupti. Nemo nisi tempora ullam odit itaque inventore temporibus sint! Placeat sit in itaque obcaecati asperiores officiis temporibus voluptas officia, iste numquam! Dicta perspiciatis blanditiis voluptatibus molestiae maiores.
-      Sapiente recusandae, quisquam minus sed quia veritatis quam tempore totam assumenda expedita nemo sit labore sequi ex voluptates culpa eveniet, facere laborum a beatae? Et odit quas consequatur nostrum qui?
+      <h3 class="fw-lighter">更新日誌</h3>
+      <ul class="list-unstyled">
+        {% for post in updates %}
+        <li class="mb-2 text-wrap">{{ post.Content }} <span class="text-muted">（{{ post.PublishDate }}）</span></li>
+        {% endfor %}
+      </ul>
     </div>
 
   </div>
 
 </section>
-
 {% endblock %}
 
 {% block extraScript %}

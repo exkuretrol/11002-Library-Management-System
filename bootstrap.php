@@ -18,3 +18,19 @@ $dotenv->safeLoad();
 // twig
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/public/views');
 $twig = new \Twig\Environment($loader);
+
+// markdown
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
+use League\CommonMark\MarkdownConverter;
+
+// Define your configuration, if needed
+$config = [];
+
+// Configure the Environment with all the CommonMark and GFM parsers/renderers
+$environment = new Environment($config);
+$environment->addExtension(new CommonMarkCoreExtension());
+$environment->addExtension(new GithubFlavoredMarkdownExtension());
+
+$converter = new MarkdownConverter($environment);

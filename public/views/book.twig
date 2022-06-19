@@ -7,6 +7,24 @@
 {# html頭 #}
 {% block head %}
 {{ parent() }}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    $("#reserve-btn").on("click", function () {
+      let reserve_target = $("input[name='BookNumber']").val();
+      $("#exampleModalSm").css("display", "block");
+      $.ajax({
+        type: "POST",
+        url: "/reader/reserve",
+        data: JSON.parse(`{"BookNumber" : ${reserve_target}}`),
+        success: function(res) {
+          let json = JSON.parse(res);
+          console.table(json);
+          $("#modalMessage").html(json['status_text']);
+        }
+      });
+    });
+  });
+</script>
 {% endblock head %}
 
 {# 內容 #}
@@ -14,12 +32,25 @@
 <ul>
   <li>{{ book.Title }}</li>
   <li>作者<ul>
-    {% for author in book.Author %}
-    <li>{{ author }}</li>
-    {% endfor %}
-  </ul></li>
+      {% for author in book.Author %}
+      <li>{{ author }}</li>
+      {% endfor %}
+    </ul>
+  </li>
   <li>{{ book.Publisher }}</li>
 </ul>
+<input type="hidden" name="BookNumber" value="{{ book.BookNumber }}">
+
+{% if session.reader | default %}
+<button id="reserve-btn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalSm">
+  借閱這本書
+</button>
+{% else %}
+<button id="reserve-btn" type="button" class="btn btn-primary" disabled>
+  借閱這本書
+</button>
+<div class="text-muted">登入後方可借閱</div>
+{% endif %}
 {% endblock %}
 
 {# html腳 #}

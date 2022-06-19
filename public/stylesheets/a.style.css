@@ -1,19 +1,23 @@
+:root {
+  --bs-tooltip-bg: "violet" !important
+}
 .manni-bar {
   position: relative;
   z-index: 1020;
 }
+
+@media (min-width: 992px) {
+  .doc-layout {
+    grid-template-columns: 1fr 5fr;
+  }
+}
+
 
 @media (min-width: 768px) {
   .manni-bar {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
-  }
-}
-
-@media (min-width: 992px) {
-  .doc-layout {
-    grid-template-columns: 1fr 5fr;
   }
 }
 
@@ -27,7 +31,7 @@
 
   .doc-links {
     position: sticky;
-    top: 9rem;
+    top: 10rem;
     display: block !important;
     height: calc(100vh - 9rem);
     padding-left: .25rem;
@@ -71,4 +75,36 @@
   margin-left: 1.25rem;
   color: rgba(0, 0, 0, .65);
   text-decoration: none;
+}
+
+.doc-main {
+  grid-area: main;
+}
+
+.doc-main>h2:not(:first-child) {
+  margin-top: 3rem;
+}
+
+.doc-main>p {
+  line-height: 2rem;
+  font-size: large;
+}
+
+@media (mid-width: 768px) {
+  .doc-main {
+    display: grid;
+    gap: inherit;
+  }
+
+}
+
+.tooltip-inner {
+  background-color: #e3e3e3!important;
+  text-align: left;
+  color: black;
+  opacity: 1 !important;
+  }
+
+.bs-tooltip-auto[data-popper-placement^=bottom] .tooltip-arrow::before, .bs-tooltip-start .tooltip-arrow::before {
+  border-bottom-color: #e3e3e3;
 }

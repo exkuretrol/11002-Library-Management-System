@@ -6,14 +6,327 @@
 
 {# html頭 #}
 {% block head %}
-  {{ parent() }}
+{{ parent() }}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    $("#reserved-save-btn").on("click", function (e) {
+      let checked = $("#pills-reserved").find("input[type=checkbox]:checked");
+      let ids = [];
+      for (let i of checked) {
+        let id = i.getAttribute("id");
+        id = id.replace(/check/i, "")
+        ids.push(id)
+      }
+      $.ajax({
+        type: "post",
+        url: "/admin/reserve",
+        data: JSON.parse(`{"method": "reserve", "ID": ${JSON.stringify(ids)}}`),
+        success: function (res) {
+          let json = JSON.parse(res);
+          console.table(json);
+          location.reload();
+        }
+      })
+
+      e.preventDefault();
+    });
+
+    $("#borrow-reserved-save-btn").on("click", function (e) {
+      let checked = $("#borrow-reserved-table").find("input[type=checkbox]:checked");
+      let ids = [];
+      for (let i of checked) {
+        let id = i.getAttribute("id");
+        id = id.replace(/check/i, "")
+        ids.push(id)
+      }
+      $.ajax({
+        type: "post",
+        url: "/admin/borrow",
+        data: JSON.parse(`{"method": "reserve", "ID": ${JSON.stringify(ids)}}`),
+        success: function (res) {
+          let json = JSON.parse(res);
+          console.table(json);
+          location.reload();
+        }
+      })
+
+      e.preventDefault();
+    });
+
+    $("#borrow-btn").on("click", function (e) {
+      let form = $("#borrowBookForm");
+      let reader = form.find("input[name='readerNO']").val();
+      let book = form.find("input[name='bookNO']").val();
+      let interval = form.find("option:selected").val();
+
+      $.ajax({
+        type: "post",
+        url: "/admin/borrow",
+        data: JSON.parse(`{
+          "method": "borrow", 
+          "readerNO": ${reader}, 
+          "bookNO": ${book},
+          "interval": ${interval}
+        }`),
+        success: function (res) {
+          let json = JSON.parse(res);
+          console.table(json);
+          location.reload();
+        }
+      });
+
+      e.preventDefault();
+    });
+
+    $("#returnReaderNOInput").on("change", function () {
+      let readerNO = $(this).val();
+      let tableBody = $("#return-table").children("tbody");
+      $.ajax({
+        type: "post",
+        url: "/admin/return",
+        data: JSON.parse(`{"method": "findRecords", "readerNO": ${readerNO}}`),
+        success: function (res) {
+          let json = JSON.parse(res);
+          if (json['status']) {
+            delete json['status'];
+            let tbody = $("<tbody>");
+            for (const key in json) {
+              let jsonRow = json[key];
+              let fine = jsonRow['FineAmount'] == null ? "無" : jsonRow['FineAmount'];
+              let row = $("<tr>");
+              let checkbox = `<div class="form-check"><input type="checkbox" id="check${jsonRow['ID']}" class="form-check-input"><label for="check${jsonRow['ID']}" class="form-check-label">歸還</label></div>`
+              row.append(`<th scope='row'>${jsonRow['ID']}</th>`);
+              row.append(`<td>${jsonRow['BookNumber']}</td>`);
+              row.append(`<td>${jsonRow['Title']}</td>`);
+              row.append(`<td>${fine}</td>`);
+              row.append(`<td>${checkbox}</td>`);
+              tbody.append(row);
+            }
+            tableBody.replaceWith(tbody);
+          } else {
+            let tbody = $("<tbody>");
+            tableBody.replaceWith(tbody);
+          }
+        }
+      })
+    });
+
+    $("#return-btn").on("click", function (e) {
+      let checked = $("#return-table").find("input[type=checkbox]:checked");
+      let ids = [];
+      for (let i of checked) {
+        let id = i.getAttribute("id");
+        id = id.replace(/check/i, "")
+        ids.push(id)
+      }
+      $.ajax({
+        type: "post",
+        url: "/admin/return",
+        data: JSON.parse(`{"method": "return", "ID": ${JSON.stringify(ids)}}`),
+        success: function (res) {
+          let json = JSON.parse(res);
+          console.table(json);
+          location.reload();
+        }
+      })
+      e.preventDefault();
+    });
+
+  });
+</script>
 {% endblock head %}
 
 {# 內容 #}
 {% block content %}
+<section class="bg-body px-5 rounded">
+  <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+    {# TODO: 新增儀表板 #}
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pills-borrow-tab" data-bs-toggle="pill" data-bs-target="#pills-borrow"
+        type="button" role="tab" aria-controls="pills-borrow" aria-selected="false">讀者借書</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-return-tab" data-bs-toggle="pill" data-bs-target="#pills-return" type="button"
+        role="tab" aria-controls="pills-return" aria-selected="false">讀者還書</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-reserved-tab" data-bs-toggle="pill" data-bs-target="#pills-reserved"
+        type="button" role="tab" aria-controls="pills-reserved" aria-selected="false">調閱書籍佇列</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-addbook-tab" data-bs-toggle="pill" data-bs-target="#pills-addbook"
+        type="button" role="tab" aria-controls="pills-addbook" aria-selected="false" disabled>新增書籍</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-addcopy-tab" data-bs-toggle="pill" data-bs-target="#pills-addcopy"
+        type="button" role="tab" aria-controls="pills-addcopy" aria-selected="false" disabled>新增副本</button>
+    </li>
+    {# TODO: 發文功能 #}
+  </ul>
+  <div class="tab-content" id="pills-tabContent">
+    {# 讀者借書 #}
+    <div class="tab-pane fade show active" id="pills-borrow" role="tabpanel" aria-labelledby="pills-borrow-tab">
+      <div class="d-flex align-items-start">
+        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+          <button class="nav-link active" id="v-pills-open-tab" data-bs-toggle="pill" data-bs-target="#v-pills-open"
+            type="button" role="tab" aria-controls="v-pills-open" aria-selected="true">登記借書</button>
+          <button class="nav-link" id="v-pills-close-tab" data-bs-toggle="pill" data-bs-target="#v-pills-close"
+            type="button" role="tab" aria-controls="v-pills-close" aria-selected="false">調閱借書</button>
+        </div>
+        <div class="tab-content flex-fill" id="v-pills-tabContent">
+          {# 登記借書 #}
+          <div class="tab-pane fade show active" id="v-pills-open" role="tabpanel" aria-labelledby="v-pills-open-tab">
+            <form action="post" id="borrowBookForm">
+              <div class="mb-3 row">
+                <div class="col-2 col-form-label">
+                  <label for="readerNOInput" class="form-label">讀者編號</label>
+                </div>
+                <div class="col-10">
+                  <input type="number" class="form-control" name="readerNO" id="readerNOInput" value="35" min="1">
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <div class="col-2 col-form-label">
+                  <label for="bookNOInput" class="form-label">書籍編號</label>
+                </div>
+                <div class="col-10">
+                  <input type="number" class="form-control" id="bookNOInput" name="bookNO" min="1">
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <div class="col-2 col-form-label">
+                  <label for="intervalInput" class="form-label">借閱時長</label>
+                </div>
+                <div class="col-10">
+                  <select name="interval" class="form-select">
+                    <option value="7">一週</option>
+                    <option value="14" selected>二週</option>
+                    <option value="28">四週</option>
+                  </select>
+                </div>
+              </div>
+              <button id="borrow-btn" type="button" class="btn btn-primary">借閱</button>
+            </form>
+          </div>
+          {# 調閱借書 #}
+          <div class="tab-pane fade" id="v-pills-close" role="tabpanel" aria-labelledby="v-pills-close-tab">
+
+            <table class="table" id="borrow-reserved-table">
+              <thead>
+                <tr>
+                  <th scope="col">編號</th>
+                  <th scope="col">讀者編號</th>
+                  <th scope="col">讀者名稱</th>
+                  <th scope="col">書籍編號</th>
+                  <th scope="col">書籍名稱</th>
+                  <th scope="col">預借日期</th>
+                  <th scope="col">已借閱</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for record in borrow_reserved %}
+                <tr>
+                  <th scope="row">{{ loop.index }}</th>
+                  <td>{{ record.ReaderNumber }}</td>
+                  <td>{{ record.Name }}</td>
+                  <td>{{ record.BookNumber }}</td>
+                  <td>{{ record.Title }}</td>
+                  <td>{{ record.Date }}</td>
+                  <td>
+                    <div class="form-check">
+                      <input type="checkbox" value="" id="check{{ record.ID }}" class="form-check-input">
+                      <label for="check{{ record.ID }}" class="form-check-label">
+                        已借閱
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <button id="borrow-reserved-save-btn" type="button" class="btn btn-primary">儲存</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    {# 讀者還書 #}
+    <div class="tab-pane fade" id="pills-return" role="tabpanel" aria-labelledby="pills-return-tab">
+      <form action="post" id="returnBookForm">
+        <div class="mb-3 row">
+          <div class="col-2 col-form-label">
+            <label for="returnReaderNOInput" class="form-label">讀者編號</label>
+          </div>
+          <div class="col-10">
+            <input type="number" class="form-control" name="readerNO" id="returnReaderNOInput" min="1" max="1000">
+          </div>
+        </div>
+        <div class="mb-3">
+          <table class="table" id="return-table">
+            <thead>
+              <tr>
+                <th scope="col">編號</th>
+                <th scope="col">書籍編號</th>
+                <th scope="col">書籍名稱</th>
+                <th scope="col">罰金</th>
+                <th scope="col">歸還</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <button id="return-btn" type="button" class="btn btn-primary">儲存</button>
+      </form>
+    </div>
+    {# 調閱書籍佇列 #}
+    <div class="tab-pane fade" id="pills-reserved" role="tabpanel" aria-labelledby="pills-reserved-tab">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">編號</th>
+            <th scope="col">讀者編號</th>
+            <th scope="col">讀者名稱</th>
+            <th scope="col">書籍編號</th>
+            <th scope="col">書籍名稱</th>
+            <th scope="col">預借日期</th>
+            <th scope="col">已準備</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in reserved %}
+          <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ record.ReaderNumber }}</td>
+            <td>{{ record.Name }}</td>
+            <td>{{ record.BookNumber }}</td>
+            <td>{{ record.Title }}</td>
+            <td>{{ record.Date }}</td>
+            <td>
+              <div class="form-check">
+                <input type="checkbox" value="" id="check{{ record.ID }}" class="form-check-input">
+                <label for="check{{ record.ID }}" class="form-check-label">
+                  已準備
+                </label>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button id="reserved-save-btn" type="button" class="btn btn-primary">儲存</button>
+    </div>
+    <div class="tab-pane fade" id="pills-addbook" role="tabpanel" aria-labelledby="pills-addbook-tab">
+      新增書籍
+    </div>
+    <div class="tab-pane fade" id="pills-addcopy" role="tabpanel" aria-labelledby="pills-addcopy-tab">
+      新增副本
+    </div>
+  </div>
+</section>
 {% endblock %}
 
 {# html腳 #}
 {% block footer %}
-  {{ parent() }}
+{{ parent() }}
 {% endblock footer %}

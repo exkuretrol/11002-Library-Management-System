@@ -19,6 +19,7 @@
         "twig/twig": "2.x",
         "vlucas/phpdotenv": "^5.4",
         "bramus/router": "^1.6",
-        "monolog/monolog": "^3.1"
+        "monolog/monolog": "^3.1",
+        "league/commonmark": "^2.3"
     }
 }
