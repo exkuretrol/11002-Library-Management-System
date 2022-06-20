@@ -30,8 +30,8 @@
   }
 
   .doc-links {
-    position: sticky;
-    top: 10rem;
+    position: fixed;
+    top: 9rem;
     display: block !important;
     height: calc(100vh - 9rem);
     padding-left: .25rem;
