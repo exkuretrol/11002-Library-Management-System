@@ -182,7 +182,7 @@
                   <label for="readerNOInput" class="form-label">讀者編號</label>
                 </div>
                 <div class="col-10">
-                  <input type="number" class="form-control" name="readerNO" id="readerNOInput" value="35" min="1">
+                  <input type="number" class="form-control" name="readerNO" id="readerNOInput" min="1">
                 </div>
               </div>
               <div class="mb-3 row">
@@ -258,7 +258,7 @@
             <label for="returnReaderNOInput" class="form-label">讀者編號</label>
           </div>
           <div class="col-10">
-            <input type="number" class="form-control" name="readerNO" id="returnReaderNOInput" min="1" max="1000">
+            <input type="number" class="form-control" name="readerNO" placeholder="{{ (session['readerNO'] is defined) ? '目前登入的讀者編號為：' ~ session['readerNO'] : '可以直接輸入讀者編號；或是登入讀者，此處會預覽當前讀者的讀者編號。' }}" id="returnReaderNOInput" min="1" max="1000">
           </div>
         </div>
         <div class="mb-3">

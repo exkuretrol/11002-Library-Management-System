@@ -171,6 +171,7 @@ $router->get('/admin', function () use ($router, $twig, $menu, $db) {
         ]);
     } else {
         $_SESSION['admin'] = $user;
+        // TODO: 把 sql 語句變成方法
         $sql = <<< EOF
         select
             ID,
