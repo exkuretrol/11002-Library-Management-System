@@ -1,6 +1,6 @@
 # 所使用的資料表及內容
 
-以下的表是由 [anth2k2k 的圖書館租借系統](https://github.com/anth2k2k/LibraryManagementSystem)的表格，再根據我們的需求做調整。
+以下的表是由 [anth2k2k 的圖書館租借系統](https://github.com/anth2k2k/LibraryManagementSystem)的表格，再根據我們的需求做調整。我們最後有匯出為 SQL，可以至我們的[Github 知識庫](https://github.com/exkuretrol/11002-Library-Management-System/blob/main/doc/ManniLibrary.sql)查看。
 
 ## 讀者（Reader）
 
