@@ -8,34 +8,130 @@ $menu = [
     '首頁' => [
         'name' => '首頁',
         'href' => '/',
-        'disabled' => false
+        'disabled' => false,
     ],
     '主題' => [
         'name' => '主題館藏',
         'href' => '/collection',
-        'disabled' => true
+        'disabled' => true,
     ],
     '推薦書籍' => [
         'name' => '推薦書籍',
         'href' => '/recommend',
-        'disabled' => true
+        'disabled' => true,
     ],
     '網站說明' => [
         'name' => '網站說明',
         'href' => '/report',
-        'disabled' => false
+        'disabled' => false,
     ],
     '除錯' => [
         'name' => '除錯頁面',
         'href' => '/debug',
-        'disabled' => true
+        'disabled' => true,
     ],
     '關於' => [
         'name' => '關於',
         'href' => '/about',
-        'disabled' => false
-    ]
+        'disabled' => false,
+    ],
 ];
+
+$report_pages = [
+    '主題動機' => [
+        'name' => '主題動機',
+        'href' => '/ch1/theme',
+        'nested' => false,
+    ],
+    '網站架構' => [
+        'name' => '網站架構',
+        'href' => '/ch2/site-map',
+        'nested' => false,
+    ],
+    '資料表及內容' => [
+        'name' => '資料表及內容',
+        'href' => '/ch3/tables-explanation',
+        'nested' => false,
+    ],
+    '網頁分工及說明' => [
+        'name' => '網頁分工及說明',
+        'href' => null,
+        'nested' => true,
+        'pages' => [
+            'bootstrap' => [
+                'name' => 'bootstrap.php',
+                'href' => '/ch4/bootstrap',
+                'nested' => false,
+            ],
+            'database' => [
+                'name' => 'Database.php',
+                'href' => '/ch4/database',
+                'nested' => false,
+            ],
+            'helper' => [
+                'name' => 'helper.php',
+                'href' => '/ch4/helper',
+                'nested' => false,
+            ],
+            'index' => [
+                'name' => 'index.php',
+                'href' => '/ch4/index',
+                'nested' => false,
+            ],
+            'divider' => [
+                'name' => 'divider',
+                'href' => null,
+                'nested' => false,
+            ],
+            'index.twig' => [
+                'name' => 'index.twig',
+                'href' => '/ch4/index_twig',
+                'nested' => false,
+            ],
+        ],
+    ],
+    '分工表' => [
+        'name' => '分工表',
+        'href' => '/ch5/work-division',
+        'nested' => false,
+    ],
+    'divider' => [
+        'name' => 'divider',
+        'href' => null,
+        'nested' => false,
+    ],
+    '關於我們' => [
+        'name' => '關於我們',
+        'href' => '/about-us',
+        'nested' => false,
+    ],
+];
+
+function active_pages(array $pages, String $str): array
+{
+    function check_active(array $v, String $str): bool
+    {
+        return ($v["href"] == $str) ? true : false;
+    }
+
+    foreach ($pages as $k => $v) {
+        if (!$v["nested"]) {
+            if (check_active($v, $str)) {
+                $pages[$k]["active"] = true;
+                return $pages;
+            }
+        }
+        if ($v["nested"]) {
+            foreach ($v["pages"] as $kk => $vv) {
+                if (check_active($vv, $str)) {
+                    $pages[$k]["pages"][$kk]["active"] = true;
+                    $pages[$k]["active"] = true;
+                    return $pages;
+                }
+            }
+        }
+    }
+}
 
 use function \Util\pr;
 use \Classes\Database as db;
@@ -58,7 +154,7 @@ $router->get('/', function () use ($twig, $menu, $db) {
         'menu' => $menu,
         'maintain' => $maintain,
         'news' => $news,
-        'updates' => $updates
+        'updates' => $updates,
     ]);
 });
 
@@ -95,18 +191,18 @@ $router->get('/reader', function () use ($twig, $menu, $db) {
     $readerNO = $_SESSION["readerNO"];
     $profile = $db->findExistRow("Reader", "Email", $email, true)[0];
     $sql = <<< EOF
-    SELECT 
+    SELECT
         ID,
         Title,
         Date,
         Status
-    FROM 
+    FROM
         Reserved
-    left join 
-        Book 
-    on 
+    left join
+        Book
+    on
         Reserved.R_BookNumber = Book.BookNumber
-    WHERE 
+    WHERE
         R_ReaderNumber = $readerNO and
         Status != 2
     EOF;
@@ -119,7 +215,7 @@ $router->get('/reader', function () use ($twig, $menu, $db) {
         Title,
         BorrowDate,
         DueDate
-    from 
+    from
         CirculatedCopy
     left join
         Copy
@@ -127,13 +223,13 @@ $router->get('/reader', function () use ($twig, $menu, $db) {
         CirculatedCopy.CopyNumber = Copy.CopyNumber
     left join
         Book
-    on 
+    on
         Copy.BookNumber = Book.BookNumber
     where
         ReaderNumber = $readerNO AND
         ReturnDate is null
     EOF;
-    
+
     $borrowed = $db->execute($sql);
     unset($profile["ReaderNumber"]);
     unset($profile["Password"]);
@@ -222,7 +318,7 @@ $router->get('/admin', function () use ($router, $twig, $menu, $db) {
             'session' => $_SESSION,
             'menu' => $menu,
             'reserved' => $reserved,
-            'borrow_reserved' => $borrow_reserved
+            'borrow_reserved' => $borrow_reserved,
         ]);
     }
 });
@@ -263,9 +359,9 @@ $router->get('/debug', function () use ($twig, $db, $menu) {
 
     $NO = 4;
     $sql = <<< EOF
-    select 
-        * 
-    from 
+    select
+        *
+    from
         Copy
     where
         BookNumber = $NO and
@@ -274,7 +370,7 @@ $router->get('/debug', function () use ($twig, $db, $menu) {
     EOF;
 
     $res = $db->execute($sql, $simple = true);
-    
+
     echo $twig->render('debug.twig', [
         'session' => $_SESSION,
         'menu' => $menu,
@@ -295,21 +391,23 @@ $router->get('/report', function () {
     exit;
 });
 
-$router->get('/report/{section}(/\d+)?', function($section, $subsection = null) use ($twig, $menu, $converter) {
+$router->get('/report/{section}(/\d+)?', function ($section, $subsection = null) use ($twig, $menu, $report_pages, $converter) {
     if ($subsection == null) {
-        $path = "./markdown/{$section}.md";
+        $path = "/{$section}";
     } else {
-        $path = "./markdown/{$section}/{$subsection}.md";
+        $path = "/{$section}/{$subsection}";
     }
-    $file = fopen($path, "r");
-    $md = fread($file, filesize($path));
+    $md_path  = "./markdown" . $path . ".md";
+    $file = fopen($md_path, "r");
+    $md = fread($file, filesize($md_path));
     $markdown = $converter->convert($md);
     fclose($file);
     echo $twig->render(
         'report.twig', [
             'menu' => $menu,
             'session' => $_SESSION,
-            'markdown' => $markdown
+            'pages' => active_pages($report_pages, $path),
+            'markdown' => $markdown,
         ]
     );
 });
@@ -401,9 +499,9 @@ $router->post('/reader/reserve', function () use ($db, $log) {
     $now = $time->format('Y/m/d H:i:s');
 
     $sql = <<< EOF
-    select 
-        * 
-    from 
+    select
+        *
+    from
         Copy
     where
         BookNumber = $bookNumber and
@@ -414,7 +512,7 @@ $router->post('/reader/reserve', function () use ($db, $log) {
 
     if (count($res) > 0) {
         $sql = <<< EOF
-        insert into Reserved 
+        insert into Reserved
             (
                 R_ReaderNumber,
                 R_BookNumber,
@@ -431,13 +529,13 @@ $router->post('/reader/reserve', function () use ($db, $log) {
 
         $db->execute($sql);
         $targetCopyNumber = $res[0]["CopyNumber"];
-        
+
         $sql = <<<EOF
-        update 
-            Copy 
-        set 
+        update
+            Copy
+        set
             Type = 2
-        where 
+        where
             CopyNumber = $targetCopyNumber
         EOF;
 
@@ -478,7 +576,7 @@ $router->post('/admin/borrow', function () use ($db) {
     $jsonArray = array();
     if ($_POST["method"] == "reserve") {
         $IDs = $_POST["ID"];
-        foreach ($IDs as $ID ) {
+        foreach ($IDs as $ID) {
 
             $sql = <<< EOF
             select
@@ -493,9 +591,9 @@ $router->post('/admin/borrow', function () use ($db) {
             $bookNO = $res["R_BookNumber"];
 
             $sql = <<< EOF
-            select 
-                * 
-            from 
+            select
+                *
+            from
                 Copy
             where
                 BookNumber = $bookNO and
@@ -509,14 +607,14 @@ $router->post('/admin/borrow', function () use ($db) {
                 $readerNO,
                 $res["CopyNumber"],
                 $now,
-                $dueDate
+                $dueDate,
             );
 
             $colArr = array(
                 "ReaderNumber",
                 "CopyNumber",
                 "BorrowDate",
-                "DueDate"
+                "DueDate",
             );
 
             $db->insertOneRow("CirculatedCopy", $insertArr, $colArr);
@@ -525,20 +623,20 @@ $router->post('/admin/borrow', function () use ($db) {
 
             // 寫入 Copy
             $sql = <<< EOF
-            update 
+            update
                 Copy
-            set 
+            set
                 Type = 1
-            where 
+            where
                 CopyNumber = $reserveTargetCopyNO
             EOF;
             $db->execute($sql);
 
             // 更新 Reserved
             $sql = <<< EOF
-            update 
+            update
                 Reserved
-            set 
+            set
                 Status = 2
             where
                 ID = $ID
@@ -558,9 +656,9 @@ $router->post('/admin/borrow', function () use ($db) {
         $dueDate = $time->add($interval)->format('Y/m/d H:i:s');
 
         $sql = <<< EOF
-        select 
-            * 
-        from 
+        select
+            *
+        from
             Copy
         where
             BookNumber = $bookNO and
@@ -576,14 +674,14 @@ $router->post('/admin/borrow', function () use ($db) {
                 $readerNO,
                 $res["CopyNumber"],
                 $now,
-                $dueDate
+                $dueDate,
             );
 
             $colArr = array(
                 "ReaderNumber",
                 "CopyNumber",
                 "BorrowDate",
-                "DueDate"
+                "DueDate",
             );
 
             $db->insertOneRow("CirculatedCopy", $insertArr, $colArr);
@@ -592,11 +690,11 @@ $router->post('/admin/borrow', function () use ($db) {
 
             // 寫入 Copy
             $sql = <<< EOF
-            update 
+            update
                 Copy
-            set 
+            set
                 Type = 1
-            where 
+            where
                 CopyNumber = $reserveTargetCopyNO
             EOF;
             $db->execute($sql);
@@ -679,7 +777,7 @@ $router->post('/admin/return', function () use ($db) {
     if ($_POST["method"] == "return") {
         $IDs = $_POST["ID"];
         foreach ($IDs as $ID) {
-            
+
             // find CopyNumber
             $sql = <<< EOF
             select
@@ -706,7 +804,7 @@ $router->post('/admin/return', function () use ($db) {
 
             // update Copy Type
             $sql = <<< EOF
-            update 
+            update
                 Copy
             set
                 Type = 0

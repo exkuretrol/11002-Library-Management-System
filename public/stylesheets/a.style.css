@@ -77,6 +77,11 @@
   text-decoration: none;
 }
 
+.doc-links .active {
+  font-weight: 600;
+  color:rgba(0, 0, 0, .85)
+}
+
 .doc-main {
   grid-area: main;
   max-width: 954px;

@@ -1,6 +1,6 @@
 # index.twig
 
-```html
+```twig
 {# 延伸 base.twig #}
 {% extends "base.twig" %}
 

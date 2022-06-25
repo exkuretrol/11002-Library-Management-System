@@ -2,13 +2,15 @@
 {% extends "base.twig" %}
 
 {# 頁面標題 #}
-{% block title %}計畫書{% endblock title %}
+{% block title %}報吿書{% endblock title %}
 
 {# html頭 #}
 {% block head %}
 {{ parent() }}
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-light.min.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+{# extend twig language #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/languages/twig.min.js"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -25,70 +27,56 @@
   <aside class="doc-sidebar">
     <nav class="doc-links" id="doc-nav" aria-label="navigation">
       <ul class="list-unstyled">
-        <li class="mb-1">
-          <a href="/report/ch1/theme" class="d-inline-flex align-items-center rounded">
-            主題動機
-          </a>
-        </li>
-        <li class="mb-1">
-          <a href="/report/ch2/site-map" class="d-inline-flex align-items-center rounded collapsed">
-            網站架構
-          </a>
-        </li>
-        <li class="mb-1">
-          <a href="/report/ch3/tables-explanation" class="d-inline-flex align-items-center rounded">
-            所使用的資料表及內容
-          </a>
-        </li>
-        <li>
-          <button class="btn d-inline-flex align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#site-explanation" aria-expanded="false">
-            網頁分工及說明
-          </button>
-          <div class="collapse" id="site-explanation">
-            <ul class="list-unstyled fw-normal pb-1 small">
-              <li>
-                <a href="/report/ch4/bootstrap" class="d-inline-flex align-items-center rounded">
-                  bootstrap.php
-                </a>
-              </li>
-              <li>
-                <a href="/report/ch4/database" class="d-inline-flex align-items-center rounded">
-                  Database.php
-                </a>
-              </li>
-              <li>
-                <a href="/report/ch4/helper" class="d-inline-flex align-items-center rounded">
-                  helper.php
-                </a>
-              </li>
-              <li>
-                <a href="/report/ch4/index" class="d-inline-flex align-items-center rounded">
-                  index.php
-                </a>
-              </li>
-              <li class="my-3 mx-4 border-top"></li>
-              <li>
-                <a href="/report/ch4/index_twig" class="d-inline-flex align-items-center rounded">
-                  index.twig
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li>
-            <a href="/report/ch5/work-division" class="d-inline-flex align-items-center rounded">
-              分工表
+        {% for page in pages %}
+
+          {# 如果該頁面不是巢狀的 #}
+          {% if not page.nested %}
+
+          {# 分隔線 #}
+          {% if page.href is null %}
+          <li class="my-3 mx-4 border-top"></li>
+
+          {# 不是分隔線 #}
+          {% else %}
+          <li class="mb-1">
+            <a href="{{ '/report' ~ page.href }}" class="d-inline-flex align-items-center rounded {{ page.active ? 'active' : '' }}">
+              {{ page.name }}
             </a>
-        </li>
-        <li class="my-3 mx-4 border-top"></li>
-        <li>
-          <a href="/report/about-us" class="d-inline-flex align-items-center rounded">
-            關於我們
-          </a>
-        </li>
+          </li>
+          {% endif %}
+
+          {# 如果該頁面是巢狀的 #}
+          {% else %}
+            <li>
+              <button class="btn d-inline-flex align-items-center rounded {{ page.active ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#{{ page.name }}" aria-expanded="{{ page.active ? 'true' : 'false' }}">
+                {{ page.name }}
+              </button>
+              <div class="collapse {{ page.active ? 'show' : '' }}" id="{{ page.name }}">
+                <ul class="list-unstyled fw-normal pb-1 small">
+                  {% for subpage in page.pages %}
+
+                    {# 分隔線 #}
+                    {% if subpage.href is null %}
+                    <li class="my-3 mx-4 border-top"></li>
+
+                    {# 不是分隔線 #}
+                    {% else %}
+                    <li class="mb-1">
+                      <a href="{{ '/report' ~ subpage.href }}" class="d-inline-flex align-items-center rounded {{ subpage.active ? 'active' : '' }}">
+                        {{ subpage.name }}
+                      </a>
+                    </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </li>
+          {% endif %}
+        {% endfor %}
       </ul>
     </nav>
   </aside>
+  {# TODO: fix main content width #}
   <main class="doc-main order-1 doc-main">
     {{ markdown | raw }}
   </main>
